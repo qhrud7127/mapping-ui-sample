@@ -121,6 +121,7 @@ export const TableNodeField: React.FC<TableNodeFieldProps> = React.memo(
           <div className="hidden flex-row group-hover:flex">
             <Button
               className="size-6 p-0 hover:bg-primary-foreground"
+              variant={"text"}
               onClick={(e) => {
                 e.stopPropagation();
                 removeField(tableNodeId, field.id);

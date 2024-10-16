@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import type { Edge, EdgeProps } from '@xyflow/react';
 import { getSmoothStepPath, Position, useReactFlow } from '@xyflow/react';
-import type { DBRelationship } from '@/lib/domain/db-relationship';
-import { RIGHT_HANDLE_ID_PREFIX } from './table-node/table-node-field';
-import { useChartDB } from '@/hooks/use-chartdb';
-import { useLayout } from '@/hooks/use-layout';
-import { getCardinalityMarkerId } from './canvas-utils';
 import {cn} from "../../lib/utils.ts";
+import {useLayout} from "../../hooks/use-layout.ts";
+import {useChartDB} from "../../hooks/use-chartdb.ts";
+import {RIGHT_HANDLE_ID_PREFIX} from "../node/table-node-field.tsx";
+import {getCardinalityMarkerId} from "../canvas-utils.ts";
+import {DBRelationship} from "../../lib/domain/db-relationship.ts";
 
 export type RelationshipEdgeType = Edge<
     {

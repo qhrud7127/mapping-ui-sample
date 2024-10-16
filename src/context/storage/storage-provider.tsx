@@ -1,13 +1,12 @@
 import React from 'react';
 import type { StorageContext } from './storage-context.tsx';
 import { storageContext } from './storage-context.tsx';
-import Dexie, { type EntityTable } from 'dexie';
-import type { Diagram } from '@/lib/domain/diagram';
-import type { DBTable } from '@/lib/domain/db-table';
-import type { DBRelationship } from '@/lib/domain/db-relationship';
-import { determineCardinalities } from '@/lib/domain/db-relationship';
-import type { ChartDBConfig } from '@/lib/domain/config';
-import type { DBDependency } from '@/lib/domain/db-dependency';
+import Dexie, {EntityTable} from "dexie";
+import {Diagram} from "../../lib/domain/diagram.ts";
+import {DBTable} from "../../lib/domain/db-table.ts";
+import {DBRelationship} from "../../lib/domain/db-relationship.ts";
+import {DBDependency} from "../../lib/domain/db-dependency.ts";
+import {ChartDBConfig} from "../../lib/domain/config.ts";
 
 export const StorageProvider: React.FC<React.PropsWithChildren> = ({
     children,
@@ -127,7 +126,6 @@ export const StorageProvider: React.FC<React.PropsWithChildren> = ({
 
         if (!config) {
             const diagrams = await db.diagrams.toArray();
-
             await db.config.add({
                 id: 1,
                 defaultDiagramId: diagrams?.[0]?.id ?? '',

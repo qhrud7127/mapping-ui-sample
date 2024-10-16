@@ -1,5 +1,6 @@
 import './App.css'
-import {Canvas} from "./canvas/canvas.tsx";
+import {RouterProvider} from "react-router-dom";
+import {router} from "./router.tsx";
 
 function App() {
 
@@ -25,7 +26,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>*/}
-      <Canvas/>
+      <RouterProvider router={router}/>
     </>
   )
 }

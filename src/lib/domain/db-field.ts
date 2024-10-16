@@ -35,6 +35,7 @@ export const createFieldsFromMetadata = ({
     primaryKeys: PrimaryKeyInfo[];
     aggregatedIndexes: AggregatedIndexInfo[];
 }) => {
+
     const uniqueColumns = columns
         .filter(
             (col) =>
