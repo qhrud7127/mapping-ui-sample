@@ -303,6 +303,7 @@ export const Canvas = () => {
     },
     [createRelationship, getField, toast, databaseType]
   );
+  // 테스트 커밋
 
   return (
     <div style={{width: '100vw', height: '100vh'}}>
@@ -323,6 +324,7 @@ export const Canvas = () => {
           type: 'relationship-edge',
         }}
       />
+
     </div>
   )
 }
