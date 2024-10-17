@@ -24,7 +24,6 @@ import {findTableOverlapping} from "./canvas-utils.ts";
 import {areFieldTypesCompatible} from "../lib/data/data-types/data-types.ts";
 import {useToast} from "../components/toast/use-toast.ts";
 
-
 export type EdgeType = RelationshipEdgeType;
 type AddEdgeParams = Parameters<typeof addEdge<EdgeType>>[0];
 
@@ -48,8 +47,17 @@ const tableToTableNode = (
 });
 
 export const Canvas = () => {
+  const {getEdge, getNode} = useReactFlow();
+  const {toast} = useToast();
+
+  const [nodes, setNodes, onNodesChange] = useNodesState<TableNodeType>(
+    sample.map((table) => tableToTableNode(table)
+    )
+  );
+
   const nodeTypes = useMemo(() => ({table: TableNode}), []);
   const {
+    tables,
     relationships,
     updateTablesState,
     removeRelationships,
@@ -58,18 +66,10 @@ export const Canvas = () => {
     createRelationship
   } = useChartDB();
 
-  const {getEdge, getNode} =
-    useReactFlow();
-  const {toast} = useToast();
 
-  const [nodes, onNodesChange] = useNodesState<TableNodeType>(
-    sample.map((table) => tableToTableNode(table))
-  );
-  const [overlapGraph, setOverlapGraph] =
-    useState<Graph<string>>(createGraph());
+  const [overlapGraph, setOverlapGraph] = useState<Graph<string>>(createGraph());
 
-  const [edges, setEdges, onEdgesChange] =
-    useEdgesState<EdgeType>(initialEdges);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeType>(initialEdges);
 
 
   useEffect(() => {
@@ -97,6 +97,32 @@ export const Canvas = () => {
       ),
     ]);
   }, [relationships, setEdges]);
+  /*
+
+    useEffect(() => {
+      setNodes(
+        tables.map((table) => {
+          const isOverlapping =
+            (overlapGraph.graph.get(table.id) ?? []).length > 0;
+          const node = tableToTableNode(table);
+
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isOverlapping,
+            },
+          };
+        })
+      );
+    }, [
+      tables,
+      setNodes,
+      overlapGraph.lastUpdated,
+      overlapGraph.graph,
+    ]);
+
+  */
 
   const updateOverlappingGraphOnChanges = useCallback(
     ({
@@ -296,7 +322,6 @@ export const Canvas = () => {
           animated: false,
           type: 'relationship-edge',
         }}
-        fitView
       />
     </div>
   )
