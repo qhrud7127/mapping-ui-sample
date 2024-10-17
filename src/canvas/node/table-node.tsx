@@ -10,7 +10,6 @@ import {DBTable} from "../../lib/domain/db-table.ts";
 import {RelationshipEdgeType} from "../edge/relationship-edge.tsx";
 import {DBField} from "../../lib/domain/db-field.ts";
 import {useChartDB} from "../../hooks/use-chartdb.ts";
-import {useLayout} from "../../hooks/use-layout.ts";
 import {useTranslation} from "react-i18next";
 import {TableNodeField} from "./table-node-field.tsx";
 
@@ -37,7 +36,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
    }) => {
     const {updateTable, relationships} = useChartDB();
     const edges = useStore((store) => store.edges) as EdgeType[];
-    const {openTableFromSidebar, selectSidebarSection} = useLayout();
     const [expanded, setExpanded] = useState(false);
     const {t} = useTranslation();
 
@@ -49,11 +47,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
     ) as RelationshipEdgeType[];
 
     const focused = !!selected && !dragging;
-
-    const openTableInEditor = () => {
-      selectSidebarSection('tables');
-      openTableFromSidebar(table.id);
-    };
 
     const expandTable = useCallback(() => {
       updateTable(table.id, {
@@ -133,11 +126,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
             ? 'animate-scale-2'
             : ''
         )}
-        onClick={(e) => {
-          if (e.detail === 2) {
-            openTableInEditor();
-          }
-        }}
       >
         <NodeResizer
           isVisible={focused}
@@ -165,7 +153,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
           <div className="hidden shrink-0 flex-row group-hover:flex">
             <Button
               className="min-w-8 p-0 text-slate-500 hover:bg-primary-foreground hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
-              onClick={openTableInEditor}
             >
               <Pencil className="size-4"/>
             </Button>

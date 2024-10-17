@@ -57,7 +57,6 @@ export const Canvas = () => {
 
   const nodeTypes = useMemo(() => ({table: TableNode}), []);
   const {
-    tables,
     relationships,
     updateTablesState,
     removeRelationships,
