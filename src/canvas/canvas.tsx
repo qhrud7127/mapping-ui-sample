@@ -303,7 +303,7 @@ export const Canvas = () => {
     },
     [createRelationship, getField, toast, databaseType]
   );
-  // 테스트 커밋
+  // 테스트 커밋222
 
   return (
     <div style={{width: '100vw', height: '100vh'}}>
