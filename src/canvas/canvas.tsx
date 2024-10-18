@@ -21,7 +21,6 @@ import {LEFT_HANDLE_ID_PREFIX, TARGET_ID_PREFIX} from "./node/table-node-field.t
 import {debounce} from "../lib/utils.ts";
 import {createGraph, Graph} from "../lib/graph.ts";
 import {findTableOverlapping} from "./canvas-utils.ts";
-import {areFieldTypesCompatible} from "../lib/data/data-types/data-types.ts";
 import {useToast} from "../components/toast/use-toast.ts";
 
 export type EdgeType = RelationshipEdgeType;
@@ -61,7 +60,6 @@ export const Canvas = () => {
     updateTablesState,
     removeRelationships,
     getField,
-    databaseType,
     createRelationship
   } = useChartDB();
 
@@ -277,22 +275,6 @@ export const Canvas = () => {
         return;
       }
 
-      if (
-        !areFieldTypesCompatible(
-          sourceField.type,
-          targetField.type,
-          databaseType
-        )
-      ) {
-        toast({
-          title: 'Field types are not compatible',
-          variant: 'destructive',
-          description:
-            'Relationships can only be created between compatible field types',
-        });
-        return;
-      }
-
       createRelationship({
         sourceTableId,
         targetTableId,
@@ -300,7 +282,7 @@ export const Canvas = () => {
         targetFieldId,
       });
     },
-    [createRelationship, getField, toast, databaseType]
+    [createRelationship, getField, toast]
   );
   // 테스트 커밋222
 
