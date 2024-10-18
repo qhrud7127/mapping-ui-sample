@@ -1,9 +1,7 @@
 import React, {useEffect, useMemo, useRef} from 'react';
 import {Handle, Position, useConnection, useUpdateNodeInternals,} from '@xyflow/react';
-import {KeyRound, Trash2} from 'lucide-react';
 import {useChartDB} from "../../hooks/use-chartdb.ts";
 import {DBField} from "../../lib/domain/db-field.ts";
-import {Button} from "@mui/material";
 
 
 export const LEFT_HANDLE_ID_PREFIX = 'left_rel_';
@@ -21,7 +19,7 @@ export interface TableNodeFieldProps {
 
 export const TableNodeField: React.FC<TableNodeFieldProps> = React.memo(
   ({field, focused, tableNodeId, highlighted, visible, isConnectable}) => {
-    const {removeField, relationships} = useChartDB();
+    const {relationships} = useChartDB();
     const updateNodeInternals = useUpdateNodeInternals();
     const connection = useConnection();
     const isTarget = useMemo(
@@ -109,26 +107,8 @@ export const TableNodeField: React.FC<TableNodeFieldProps> = React.memo(
         )}
         <div className="block truncate text-left">{field.name}</div>
         <div className="flex max-w-[35%] justify-end gap-2 truncate hover:shrink-0">
-          {field.primaryKey ? (
-            <div className="text-muted-foreground group-hover:hidden">
-              <KeyRound size={14}/>
-            </div>
-          ) : null}
-
           <div className="content-center truncate text-right text-xs text-muted-foreground group-hover:hidden">
             {field.type.name}
-          </div>
-          <div className="hidden flex-row group-hover:flex">
-            <Button
-              className="size-6 p-0 hover:bg-primary-foreground"
-              variant={"text"}
-              onClick={(e) => {
-                e.stopPropagation();
-                removeField(tableNodeId, field.id);
-              }}
-            >
-              <Trash2 className="size-3.5 text-red-700"/>
-            </Button>
           </div>
         </div>
       </div>

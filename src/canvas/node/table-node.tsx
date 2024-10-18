@@ -135,10 +135,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
           shouldResize={(event) => event.dy === 0}
           handleClassName="!hidden"
         />
-        {/*<TableNodeDependencyIndicator
-                        table={table}
-                        focused={focused}
-                    />*/}
         <div
           className="h-2 rounded-t-[6px]"
           style={{backgroundColor: table.color}}

@@ -8,11 +8,9 @@ import {DBTable} from "../../lib/domain/db-table.ts";
 import {deepCopy, generateId} from "../../lib/utils.ts";
 import {DBRelationship} from "../../lib/domain/db-relationship.ts";
 import {DBField} from "../../lib/domain/db-field.ts";
-import {useStorage} from "../../hooks/use-storage.ts";
 import {sample} from "../../data/sample.ts";
 
 export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) => {
-  const db = useStorage();
   const events = useEventEmitter<ChartDBEvent>();
   const [tables, setTables] = useState<DBTable[]>(sample);
   const [relationships, setRelationships] = useState<DBRelationship[]>([]);
@@ -35,14 +33,8 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
         action: 'update_table',
         data: {id, table},
       });
-
-      await Promise.all([
-        db.updateTable({id, attributes: table}),
-      ]);
-
     },
     [
-      db,
       setTables,
       getTable,
       events,
@@ -100,32 +92,8 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
       );
 
       setTables(updateTables);
-
-      events.emit({
-        action: 'remove_tables',
-        data: {tableIds: tablesToDelete.map((t) => t.id)},
-      });
-
-      const promises = [];
-      for (const updatedTable of updatedTables) {
-        promises.push(
-          db.putTable({
-            table: updatedTable,
-          })
-        );
-      }
-
-      for (const relationship of relationshipsToRemove) {
-        promises.push(
-          db.deleteRelationship({id: relationship.id})
-        );
-      }
-
-      await Promise.all(promises);
-
     },
     [
-      db,
       tables,
       setTables,
       relationships,
@@ -159,25 +127,8 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
             : table
         )
       );
-
-      const table = await db.getTable({id: tableId});
-      if (!table) {
-        return;
-      }
-
-      await Promise.all([
-        db.updateTable({
-          id: tableId,
-          attributes: {
-            ...table,
-            fields: table.fields.map((f) =>
-              f.id === fieldId ? {...f, ...field} : f
-            ),
-          },
-        }),
-      ]);
     },
-    [db, setTables, getField]
+    [setTables, getField]
   );
 
   const addRelationships: ChartDBContext['addRelationships'] = useCallback(
@@ -188,14 +139,8 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
         ...currentRelationships,
         ...relationships,
       ]);
-
-      await Promise.all([
-        ...relationships.map((relationship) =>
-          db.addRelationship({relationship})
-        ),
-      ]);
     },
-    [db, setRelationships]
+    [setRelationships]
   );
 
   const addRelationship: ChartDBContext['addRelationship'] = useCallback(
@@ -261,15 +206,8 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
             (relationship) => !ids.includes(relationship.id)
           )
         );
-
-        await Promise.all([
-          ...ids.map((id) =>
-            db.deleteRelationship({id})
-          ),
-        ]);
       },
       [
-        db,
         setRelationships,
         relationships,
       ]
@@ -294,42 +232,12 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
             r.id === id ? {...r, ...relationship} : r
           )
         );
-
-        await Promise.all([
-          db.updateRelationship({id, attributes: relationship}),
-        ]);
       },
       [
-        db,
         setRelationships,
         getRelationship,
       ]
     );
-
-  const loadDiagram: ChartDBContext['loadDiagram'] = useCallback(
-    async (diagramId: string) => {
-      const diagram = await db.getDiagram(diagramId, {
-        includeRelationships: true,
-        includeTables: true,
-        includeDependencies: true,
-      });
-
-      if (diagram) {
-        setTables(diagram?.tables ?? []);
-        setRelationships(diagram?.relationships ?? []);
-
-        events.emit({action: 'load_diagram', data: {diagram}});
-      }
-
-      return diagram;
-    },
-    [
-      db,
-      setTables,
-      setRelationships,
-      events,
-    ]
-  );
 
   return (
     <chartDBContext.Provider
@@ -337,7 +245,6 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
         tables,
         relationships,
         events,
-        loadDiagram,
         getTable,
         updateTable,
         updateTablesState,

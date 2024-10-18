@@ -40,7 +40,7 @@ export interface ChartDBContext {
   events: EventEmitter<ChartDBEvent>;
 
   // General operations
-  loadDiagram: (diagramId: string) => Promise<Diagram | undefined>;
+  // loadDiagram: (diagramId: string) => Promise<Diagram | undefined>;
 
   // Table operations
   getTable: (id: string) => DBTable | null;
@@ -100,7 +100,7 @@ export const chartDBContext = createContext<ChartDBContext>({
   events: new EventEmitter(),
 
   // General operations
-  loadDiagram: emptyFn,
+  // loadDiagram: emptyFn,
 
   // Table operations
   getTable: emptyFn,

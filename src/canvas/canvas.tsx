@@ -94,32 +94,7 @@ export const Canvas = () => {
       ),
     ]);
   }, [relationships, setEdges]);
-  /*
 
-    useEffect(() => {
-      setNodes(
-        tables.map((table) => {
-          const isOverlapping =
-            (overlapGraph.graph.get(table.id) ?? []).length > 0;
-          const node = tableToTableNode(table);
-
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              isOverlapping,
-            },
-          };
-        })
-      );
-    }, [
-      tables,
-      setNodes,
-      overlapGraph.lastUpdated,
-      overlapGraph.graph,
-    ]);
-
-  */
 
   const updateOverlappingGraphOnChanges = useCallback(
     ({
