@@ -79,6 +79,8 @@ export interface ChartDBContext {
     options?: { updateHistory: boolean }
   ) => Promise<void>;
   getRelationship: (id: string) => DBRelationship | null;
+  getSelectedRelationship: () => DBRelationship | null;
+  selectRelationShip: (id: string) => Promise<void>;
   removeRelationship: (
     id: string,
     options?: { updateHistory: boolean }
@@ -115,6 +117,8 @@ export const chartDBContext = createContext<ChartDBContext>({
   createRelationship: emptyFn,
   addRelationship: emptyFn,
   getRelationship: emptyFn,
+  getSelectedRelationship: emptyFn,
+  selectRelationShip: emptyFn,
   removeRelationship: emptyFn,
   updateRelationship: emptyFn,
   removeRelationships: emptyFn,

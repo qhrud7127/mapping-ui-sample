@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import type {ChartDBContext, ChartDBEvent} from './chartdb-context';
 import {chartDBContext} from './chartdb-context';
@@ -14,6 +14,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
   const events = useEventEmitter<ChartDBEvent>();
   const [tables, setTables] = useState<DBTable[]>(sample);
   const [relationships, setRelationships] = useState<DBRelationship[]>([]);
+  const [selectedRelationship, setSelectedRelationships] = useState<DBRelationship | null>(null);
 
   const getTable: ChartDBContext['getTable'] = useCallback(
     (id: string) => tables.find((table) => table.id === id) ?? null,
@@ -197,6 +198,24 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     [relationships]
   );
 
+  const selectRelationShip: ChartDBContext['selectRelationShip'] = useCallback(
+    async (id: string) => {
+      const selected = relationships.find((relationship) => relationship.id === id) ?? null
+      setSelectedRelationships(selected)
+    },
+    [relationships]
+  );
+
+  useEffect(() => {
+    console.log(selectedRelationship)
+  }, [selectedRelationship]);
+
+  const getSelectedRelationship: ChartDBContext['getSelectedRelationship'] = useCallback(
+    () =>
+      selectedRelationship,
+    [selectedRelationship]
+  );
+
   const removeRelationships: ChartDBContext['removeRelationships'] =
     useCallback(
       async (ids: string[]) => {
@@ -254,6 +273,8 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
         addRelationships,
         createRelationship,
         getRelationship,
+        getSelectedRelationship,
+        selectRelationShip,
         removeRelationship,
         removeRelationships,
         updateRelationship,

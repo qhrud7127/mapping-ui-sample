@@ -1,11 +1,11 @@
-import React, {useMemo} from 'react';
-import type {Edge, EdgeProps} from '@xyflow/react';
+import React, {useCallback, useMemo} from 'react';
+import {BaseEdge, Edge, EdgeProps} from '@xyflow/react';
 import {getSmoothStepPath, Position, useReactFlow} from '@xyflow/react';
-import {cn} from "../../lib/utils.ts";
-import {useChartDB} from "../../hooks/use-chartdb.ts";
+import {cn} from "../../../lib/utils.ts";
+import {useChartDB} from "../../../hooks/use-chartdb.ts";
 import {RIGHT_HANDLE_ID_PREFIX} from "../node/table-node-field.tsx";
 import {getCardinalityMarkerId} from "../canvas-utils.ts";
-import {DBRelationship} from "../../lib/domain/db-relationship.ts";
+import {DBRelationship} from "../../../lib/domain/db-relationship.ts";
 
 export type RelationshipEdgeType = Edge<
   {
@@ -28,9 +28,13 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
                                                                             }) => {
   const {getInternalNode, getEdge} = useReactFlow();
 
-  const {relationships} = useChartDB();
+  const {relationships, selectRelationShip} = useChartDB();
 
   const relationship = data?.relationship;
+
+  const openRelationshipInPanel = useCallback(() => {
+    selectRelationShip(id);
+  }, [id, selectRelationShip]);
 
   const edgeNumber = useMemo(
     () =>
@@ -154,6 +158,11 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
           'react-flow__edge-path',
           `!stroke-2 ${selected ? '!stroke-pink-600' : '!stroke-slate-400'}`,
         ])}
+        onClick={(e) => {
+          // if (e.detail === 2) {
+          openRelationshipInPanel();
+          // }
+        }}
       />
       <path
         d={edgePath}
@@ -161,14 +170,12 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
         strokeOpacity={0}
         strokeWidth={20}
         className="react-flow__edge-interaction"
+        onClick={(e) => {
+          // if (e.detail === 2) {
+          openRelationshipInPanel();
+          // }
+        }}
       />
     </>
-    // <BaseEdge
-    //     id={id}
-    //     path={edgePath}
-    //     markerStart="url(#cardinality_one)"
-    //     markerEnd="url(#cardinality_one)"
-    //     className={`!stroke-2 ${selected ? '!stroke-slate-500' : '!stroke-slate-300'}`}
-    // />
   );
 };

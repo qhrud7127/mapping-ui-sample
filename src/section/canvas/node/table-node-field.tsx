@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useRef} from 'react';
 import {Handle, Position, useConnection, useUpdateNodeInternals,} from '@xyflow/react';
-import {useChartDB} from "../../hooks/use-chartdb.ts";
-import {DBField} from "../../lib/domain/db-field.ts";
+import {useChartDB} from "../../../hooks/use-chartdb.ts";
+import {DBField} from "../../../lib/domain/db-field.ts";
 
 
 export const LEFT_HANDLE_ID_PREFIX = 'left_rel_';

@@ -14,14 +14,12 @@ import {
 import '@xyflow/react/dist/style.css';
 import {MIN_TABLE_SIZE, TableNode, TableNodeType} from "./node/table-node.tsx";
 import {useCallback, useEffect, useMemo, useState} from "react";
-import {sample} from "../data/sample.ts";
-import {DBTable} from "../lib/domain/db-table.ts";
-import {useChartDB} from "../hooks/use-chartdb.ts";
+import {sample} from "../../data/sample.ts";
+import {DBTable} from "../../lib/domain/db-table.ts";
+import {useChartDB} from "../../hooks/use-chartdb.ts";
 import {LEFT_HANDLE_ID_PREFIX, TARGET_ID_PREFIX} from "./node/table-node-field.tsx";
-import {debounce} from "../lib/utils.ts";
-import {createGraph, Graph} from "../lib/graph.ts";
-import {findTableOverlapping} from "./canvas-utils.ts";
-import {useToast} from "../components/toast/use-toast.ts";
+import {useToast} from "../../components/toast/use-toast.ts";
+import equal from 'fast-deep-equal';
 
 export type EdgeType = RelationshipEdgeType;
 type AddEdgeParams = Parameters<typeof addEdge<EdgeType>>[0];
@@ -40,33 +38,45 @@ const tableToTableNode = (
   position: {x: table.x, y: table.y},
   data: {
     table,
-    isOverlapping: false,
   },
   width: table.width ?? MIN_TABLE_SIZE,
 });
 
 export const Canvas = () => {
-  const {getEdge, getNode} = useReactFlow();
+  const {getEdge, getNode, getEdges} = useReactFlow();
   const {toast} = useToast();
 
   const [nodes, setNodes, onNodesChange] = useNodesState<TableNodeType>(
     sample.map((table) => tableToTableNode(table)
     )
   );
+  const [selectedRelationshipIds, setSelectedRelationshipIds] = useState<
+    string[]
+  >([]);
 
   const nodeTypes = useMemo(() => ({table: TableNode}), []);
   const {
     relationships,
     updateTablesState,
+    removeRelationship,
     removeRelationships,
     getField,
     createRelationship
   } = useChartDB();
 
-
-  const [overlapGraph, setOverlapGraph] = useState<Graph<string>>(createGraph());
-
   const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeType>(initialEdges);
+
+  useEffect(() => {
+    const selectedEdgesIds = edges
+      .filter((edge) => edge.selected)
+      .map((edge) => edge.id);
+
+    if (equal(selectedEdgesIds, selectedRelationshipIds)) {
+      return;
+    }
+
+    setSelectedRelationshipIds(selectedEdgesIds);
+  }, [edges, setSelectedRelationshipIds, selectedRelationshipIds]);
 
 
   useEffect(() => {
@@ -95,45 +105,29 @@ export const Canvas = () => {
     ]);
   }, [relationships, setEdges]);
 
+  useEffect(() => {
+    const allSelectedEdges = [
+      ...selectedRelationshipIds,
+    ];
 
-  const updateOverlappingGraphOnChanges = useCallback(
-    ({
-       positionChanges,
-       sizeChanges,
-     }: {
-      positionChanges: NodePositionChange[];
-      sizeChanges: NodeDimensionChange[];
-    }) => {
-      if (positionChanges.length > 0 || sizeChanges.length > 0) {
-        let newOverlappingGraph: Graph<string> = overlapGraph;
-
-        for (const change of positionChanges) {
-          newOverlappingGraph = findTableOverlapping(
-            {node: getNode(change.id) as TableNodeType},
-            {nodes: nodes.filter((node) => !node.hidden)},
-            newOverlappingGraph
-          );
-        }
-
-        for (const change of sizeChanges) {
-          newOverlappingGraph = findTableOverlapping(
-            {node: getNode(change.id) as TableNodeType},
-            {nodes: nodes.filter((node) => !node.hidden)},
-            newOverlappingGraph
-          );
-        }
-
-        setOverlapGraph(newOverlappingGraph);
-      }
-    },
-    [nodes, overlapGraph, setOverlapGraph, getNode]
-  );
+    setEdges((edges) =>
+      edges.map((edge): EdgeType => {
+        const selected = allSelectedEdges.includes(edge.id);
 
 
-  const updateOverlappingGraphOnChangesDebounced = debounce(
-    updateOverlappingGraphOnChanges,
-    200
-  );
+        const relationshipEdge = edge as RelationshipEdgeType;
+        return {
+          ...relationshipEdge,
+          data: {
+            ...relationshipEdge.data!,
+            highlighted: selected,
+          },
+          animated: selected,
+          zIndex: selected ? 1 : 0,
+        };
+      })
+    );
+  }, [selectedRelationshipIds, setEdges, getEdges]);
 
 
   const onNodesChangeHandler: OnNodesChange<TableNodeType> = useCallback(
@@ -193,20 +187,17 @@ export const Canvas = () => {
             )
         );
       }
-
-      updateOverlappingGraphOnChangesDebounced({
-        positionChanges,
-        sizeChanges,
-      });
-
       return onNodesChange(changes);
     },
     [
       onNodesChange,
       updateTablesState,
-      updateOverlappingGraphOnChangesDebounced,
     ]
   );
+
+  useEffect(() => {
+    console.log(selectedRelationshipIds);
+  }, [selectedRelationshipIds]);
 
 
   const onEdgesChangeHandler: OnEdgesChange<EdgeType> = useCallback(
@@ -259,10 +250,9 @@ export const Canvas = () => {
     },
     [createRelationship, getField, toast]
   );
-  // 테스트 커밋222
 
   return (
-    <div style={{width: '100vw', height: '100vh'}}>
+    <div style={{width: '100vw', height: '50vh'}}>
       <ReactFlow
         className="canvas-cursor-default nodes-animated"
         nodes={nodes}

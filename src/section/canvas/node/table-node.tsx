@@ -1,23 +1,21 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import type {Node, NodeProps} from '@xyflow/react';
 import {NodeResizer, useStore} from '@xyflow/react';
 
-import type {EdgeType} from '../canvas';
+import type {EdgeType} from '../canvas.tsx';
 import {Button} from "@mui/material";
 import {ChevronDown, ChevronsLeftRight, ChevronsRightLeft, ChevronUp, Pencil, Table2} from "lucide-react";
-import {cn} from "../../lib/utils.ts";
-import {DBTable} from "../../lib/domain/db-table.ts";
+import {cn} from "../../../lib/utils.ts";
+import {DBTable} from "../../../lib/domain/db-table.ts";
 import {RelationshipEdgeType} from "../edge/relationship-edge.tsx";
-import {DBField} from "../../lib/domain/db-field.ts";
-import {useChartDB} from "../../hooks/use-chartdb.ts";
+import {DBField} from "../../../lib/domain/db-field.ts";
+import {useChartDB} from "../../../hooks/use-chartdb.ts";
 import {useTranslation} from "react-i18next";
 import {TableNodeField} from "./table-node-field.tsx";
 
 export type TableNodeType = Node<
   {
     table: DBTable;
-    isOverlapping: boolean;
-    highlightOverlappingTables?: boolean;
   },
   'table'
 >;
@@ -32,7 +30,7 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
      selected,
      dragging,
      id,
-     data: {table, isOverlapping, highlightOverlappingTables},
+     data: {table},
    }) => {
     const {updateTable, relationships} = useChartDB();
     const edges = useStore((store) => store.edges) as EdgeType[];
@@ -67,47 +65,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
       setExpanded(!expanded);
     };
 
-    const isMustDisplayedField = useCallback(
-      (field: DBField) => {
-        return (
-          relationships.some(
-            (relationship) =>
-              relationship.sourceFieldId === field.id ||
-              relationship.targetFieldId === field.id
-          ) || field.primaryKey
-        );
-      },
-      [relationships]
-    );
-
-    const visibleFields = useMemo(() => {
-      if (expanded) {
-        return table.fields;
-      }
-
-      const mustDisplayedFields = table.fields.filter((field: DBField) =>
-        isMustDisplayedField(field)
-      );
-      const nonMustDisplayedFields = table.fields.filter(
-        (field: DBField) => !isMustDisplayedField(field)
-      );
-
-      const visibleMustDisplayedFields = mustDisplayedFields.slice(
-        0,
-        TABLE_MINIMIZED_FIELDS
-      );
-      const remainingSlots =
-        TABLE_MINIMIZED_FIELDS - visibleMustDisplayedFields.length;
-      const visibleNonMustDisplayedFields = nonMustDisplayedFields.slice(
-        0,
-        remainingSlots
-      );
-
-      return [
-        ...visibleMustDisplayedFields,
-        ...visibleNonMustDisplayedFields,
-      ].sort((a, b) => table.fields.indexOf(a) - table.fields.indexOf(b));
-    }, [expanded, table.fields, isMustDisplayedField]);
 
     return (
       <div
@@ -116,15 +73,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
           selected
             ? 'border-pink-600'
             : 'border-slate-500 dark:border-slate-700',
-          isOverlapping
-            ? 'ring-2 ring-offset-slate-50 dark:ring-offset-slate-900 ring-blue-500 ring-offset-2'
-            : '',
-          !highlightOverlappingTables && isOverlapping
-            ? 'animate-scale'
-            : '',
-          highlightOverlappingTables && isOverlapping
-            ? 'animate-scale-2'
-            : ''
         )}
       >
         <NodeResizer
@@ -182,6 +130,7 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
               focused={focused}
               tableNodeId={id}
               field={field}
+              visible
               highlighted={selectedRelEdges.some(
                 (edge) =>
                   edge.data?.relationship
@@ -189,7 +138,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
                   edge.data?.relationship
                     .targetFieldId === field.id
               )}
-              visible={visibleFields.includes(field)}
               isConnectable={!table.isView}
             />
           ))}
