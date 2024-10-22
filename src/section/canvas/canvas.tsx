@@ -43,7 +43,7 @@ const tableToTableNode = (
 });
 
 export const Canvas = () => {
-  const {getEdge, getNode, getEdges} = useReactFlow();
+  const {getEdge, getEdges} = useReactFlow();
   const {toast} = useToast();
 
   const [nodes, setNodes, onNodesChange] = useNodesState<TableNodeType>(
@@ -58,7 +58,6 @@ export const Canvas = () => {
   const {
     relationships,
     updateTablesState,
-    removeRelationship,
     removeRelationships,
     getField,
     createRelationship
@@ -252,7 +251,7 @@ export const Canvas = () => {
   );
 
   return (
-    <div style={{width: '100vw', height: '50vh'}}>
+    <div style={{width: '80vw', height: '100vh'}}>
       <ReactFlow
         className="canvas-cursor-default nodes-animated"
         nodes={nodes}
@@ -269,6 +268,7 @@ export const Canvas = () => {
           animated: false,
           type: 'relationship-edge',
         }}
+        zoomOnScroll={false}
       />
 
     </div>

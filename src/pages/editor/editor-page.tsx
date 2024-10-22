@@ -3,7 +3,7 @@ import {ChartDBProvider} from "../../context/chartdb/chartdb-provider.tsx";
 import {ReactFlowProvider} from "@xyflow/react";
 import {Canvas} from "../../section/canvas/canvas.tsx";
 import {LocalConfigProvider} from "../../context/local-config/local-config-provider.tsx";
-import {Relationship} from "../../section/panel/relationship.tsx";
+import {RelationshipList} from "../../section/panel/relationship-list.tsx";
 
 
 export const EditorPage = () => (
@@ -11,8 +11,10 @@ export const EditorPage = () => (
     <ThemeProvider> {/*theme setting*/}
       <ChartDBProvider>
         <ReactFlowProvider>
-          <Canvas/>
-          <Relationship/>
+          <div style={{display: 'flex', flexDirection: 'row'}}>
+            <RelationshipList/>
+            <Canvas/>
+          </div>
         </ReactFlowProvider>
       </ChartDBProvider>
     </ThemeProvider>

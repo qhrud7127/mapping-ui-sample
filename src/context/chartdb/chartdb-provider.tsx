@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
 import type {ChartDBContext, ChartDBEvent} from './chartdb-context';
 import {chartDBContext} from './chartdb-context';
@@ -206,16 +206,6 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     [relationships]
   );
 
-  useEffect(() => {
-    console.log(selectedRelationship)
-  }, [selectedRelationship]);
-
-  const getSelectedRelationship: ChartDBContext['getSelectedRelationship'] = useCallback(
-    () =>
-      selectedRelationship,
-    [selectedRelationship]
-  );
-
   const removeRelationships: ChartDBContext['removeRelationships'] =
     useCallback(
       async (ids: string[]) => {
@@ -263,6 +253,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
       value={{
         tables,
         relationships,
+        selectedRelationship,
         events,
         getTable,
         updateTable,
@@ -273,7 +264,6 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
         addRelationships,
         createRelationship,
         getRelationship,
-        getSelectedRelationship,
         selectRelationShip,
         removeRelationship,
         removeRelationships,

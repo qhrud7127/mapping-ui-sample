@@ -1,6 +1,6 @@
 export const sample: any[] = [{
   id: '1c03hu41ko98myywerwbazeli',
-  name: 'source',
+  name: 'Source',
   x: 82.72000000000003,
   y: 98.27199999999999,
   fields: [
@@ -81,7 +81,7 @@ export const sample: any[] = [{
 },
   {
     id: 'u97myqcs1osilg7x0v263qpzd',
-    name: 'target',
+    name: 'Target',
     x: 493.50755288021537,
     y: 98.27199999999999,
     fields: [

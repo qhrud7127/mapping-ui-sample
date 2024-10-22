@@ -32,8 +32,12 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
 
   const relationship = data?.relationship;
 
-  const openRelationshipInPanel = useCallback(() => {
+  const selectEdge = useCallback(() => {
     selectRelationShip(id);
+  }, [id, selectRelationShip])
+
+  const openRelationshipInPanel = useCallback(() => {
+    // selectRelationShip(id);
   }, [id, selectRelationShip]);
 
   const edgeNumber = useMemo(
@@ -159,9 +163,10 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
           `!stroke-2 ${selected ? '!stroke-pink-600' : '!stroke-slate-400'}`,
         ])}
         onClick={(e) => {
-          // if (e.detail === 2) {
-          openRelationshipInPanel();
-          // }
+          selectEdge();
+          if (e.detail === 2) {
+            openRelationshipInPanel();
+          }
         }}
       />
       <path
@@ -171,9 +176,10 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
         strokeWidth={20}
         className="react-flow__edge-interaction"
         onClick={(e) => {
-          // if (e.detail === 2) {
-          openRelationshipInPanel();
-          // }
+          selectEdge();
+          if (e.detail === 2) {
+            openRelationshipInPanel();
+          }
         }}
       />
     </>

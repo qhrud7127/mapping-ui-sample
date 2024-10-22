@@ -3,7 +3,7 @@ import type {Node, NodeProps} from '@xyflow/react';
 import {NodeResizer, useStore} from '@xyflow/react';
 
 import type {EdgeType} from '../canvas.tsx';
-import {Button} from "@mui/material";
+import {IconButton} from "@mui/material";
 import {ChevronDown, ChevronsLeftRight, ChevronsRightLeft, ChevronUp, Pencil, Table2} from "lucide-react";
 import {cn} from "../../../lib/utils.ts";
 import {DBTable} from "../../../lib/domain/db-table.ts";
@@ -95,12 +95,12 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
             </p>
           </div>
           <div className="hidden shrink-0 flex-row group-hover:flex">
-            <Button
+            <IconButton
               className="min-w-8 p-0 text-slate-500 hover:bg-primary-foreground hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
             >
               <Pencil className="size-4"/>
-            </Button>
-            <Button
+            </IconButton>
+            <IconButton
               className="min-w-8 p-0 text-slate-500 hover:bg-primary-foreground hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
               onClick={
                 table.width !== MAX_TABLE_SIZE
@@ -113,7 +113,7 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
               ) : (
                 <ChevronsRightLeft className="size-4"/>
               )}
-            </Button>
+            </IconButton>
           </div>
         </div>
         <div

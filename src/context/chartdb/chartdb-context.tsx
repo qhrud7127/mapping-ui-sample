@@ -37,6 +37,7 @@ export type ChartDBEvent =
 export interface ChartDBContext {
   tables: DBTable[];
   relationships: DBRelationship[];
+  selectedRelationship: DBRelationship | null;
   events: EventEmitter<ChartDBEvent>;
 
   // General operations
@@ -79,7 +80,6 @@ export interface ChartDBContext {
     options?: { updateHistory: boolean }
   ) => Promise<void>;
   getRelationship: (id: string) => DBRelationship | null;
-  getSelectedRelationship: () => DBRelationship | null;
   selectRelationShip: (id: string) => Promise<void>;
   removeRelationship: (
     id: string,
@@ -99,6 +99,7 @@ export interface ChartDBContext {
 export const chartDBContext = createContext<ChartDBContext>({
   tables: [],
   relationships: [],
+  selectedRelationship: null,
   events: new EventEmitter(),
 
   // General operations
@@ -117,7 +118,6 @@ export const chartDBContext = createContext<ChartDBContext>({
   createRelationship: emptyFn,
   addRelationship: emptyFn,
   getRelationship: emptyFn,
-  getSelectedRelationship: emptyFn,
   selectRelationShip: emptyFn,
   removeRelationship: emptyFn,
   updateRelationship: emptyFn,
