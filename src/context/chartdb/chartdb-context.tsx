@@ -38,6 +38,7 @@ export interface ChartDBContext {
   tables: DBTable[];
   relationships: DBRelationship[];
   selectedRelationship: DBRelationship | null;
+  expandedId: string | null;
   events: EventEmitter<ChartDBEvent>;
 
   // General operations
@@ -83,16 +84,16 @@ export interface ChartDBContext {
   selectRelationShip: (id: string) => Promise<void>;
   removeRelationship: (
     id: string,
-    options?: { updateHistory: boolean }
   ) => Promise<void>;
   removeRelationships: (
     ids: string[],
-    options?: { updateHistory: boolean }
   ) => Promise<void>;
   updateRelationship: (
     id: string,
     relationship: Partial<DBRelationship>,
-    options?: { updateHistory: boolean }
+  ) => Promise<void>;
+  openRelationshipInPanel: (
+    id: string,
   ) => Promise<void>;
 }
 
@@ -100,6 +101,7 @@ export const chartDBContext = createContext<ChartDBContext>({
   tables: [],
   relationships: [],
   selectedRelationship: null,
+  expandedId: null,
   events: new EventEmitter(),
 
   // General operations
@@ -123,4 +125,5 @@ export const chartDBContext = createContext<ChartDBContext>({
   updateRelationship: emptyFn,
   removeRelationships: emptyFn,
   addRelationships: emptyFn,
+  openRelationshipInPanel: emptyFn,
 });

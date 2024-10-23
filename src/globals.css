@@ -65,7 +65,12 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.Mui-expanded {
+  margin: 0 !important;
 }

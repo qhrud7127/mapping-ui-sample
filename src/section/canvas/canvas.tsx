@@ -1,6 +1,10 @@
 import {RelationshipEdge, RelationshipEdgeType} from "./edge/relationship-edge.tsx";
 import {
   addEdge,
+  Background,
+  BackgroundVariant,
+  Controls,
+  MiniMap,
   NodeDimensionChange,
   NodePositionChange,
   NodeRemoveChange,
@@ -20,6 +24,7 @@ import {useChartDB} from "../../hooks/use-chartdb.ts";
 import {LEFT_HANDLE_ID_PREFIX, TARGET_ID_PREFIX} from "./node/table-node-field.tsx";
 import {useToast} from "../../components/toast/use-toast.ts";
 import equal from 'fast-deep-equal';
+import {Toolbar} from "./toolbar/toolbar.tsx";
 
 export type EdgeType = RelationshipEdgeType;
 type AddEdgeParams = Parameters<typeof addEdge<EdgeType>>[0];
@@ -269,7 +274,31 @@ export const Canvas = () => {
           type: 'relationship-edge',
         }}
         zoomOnScroll={false}
-      />
+      ><Controls
+        position={'bottom-center'}
+        orientation="horizontal"
+        showZoom={false}
+        showFitView={false}
+        showInteractive={false}
+        className="!shadow-none"
+      >
+        <Toolbar/>
+      </Controls>
+        <MiniMap
+          style={{
+            width: 100,
+            height: 100
+          }}
+          maskColor={'gray'}
+          nodeColor={'gray'}
+          bgColor={'bg-slate-800'}
+        />
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={16}
+          size={1}
+        />
+      </ReactFlow>
 
     </div>
   )

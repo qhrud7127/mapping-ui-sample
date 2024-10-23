@@ -1,6 +1,5 @@
 import React, {useCallback, useMemo} from 'react';
-import {BaseEdge, Edge, EdgeProps} from '@xyflow/react';
-import {getSmoothStepPath, Position, useReactFlow} from '@xyflow/react';
+import {Edge, EdgeProps, getSmoothStepPath, Position, useReactFlow} from '@xyflow/react';
 import {cn} from "../../../lib/utils.ts";
 import {useChartDB} from "../../../hooks/use-chartdb.ts";
 import {RIGHT_HANDLE_ID_PREFIX} from "../node/table-node-field.tsx";
@@ -28,7 +27,7 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
                                                                             }) => {
   const {getInternalNode, getEdge} = useReactFlow();
 
-  const {relationships, selectRelationShip} = useChartDB();
+  const {relationships, selectRelationShip, openRelationshipInPanel} = useChartDB();
 
   const relationship = data?.relationship;
 
@@ -36,8 +35,8 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
     selectRelationShip(id);
   }, [id, selectRelationShip])
 
-  const openRelationshipInPanel = useCallback(() => {
-    // selectRelationShip(id);
+  const openRelationship = useCallback(() => {
+    openRelationshipInPanel(id);
   }, [id, selectRelationShip]);
 
   const edgeNumber = useMemo(
@@ -165,7 +164,7 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
         onClick={(e) => {
           selectEdge();
           if (e.detail === 2) {
-            openRelationshipInPanel();
+            openRelationship();
           }
         }}
       />
@@ -178,7 +177,7 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
         onClick={(e) => {
           selectEdge();
           if (e.detail === 2) {
-            openRelationshipInPanel();
+            openRelationship();
           }
         }}
       />

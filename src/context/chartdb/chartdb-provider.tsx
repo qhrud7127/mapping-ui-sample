@@ -15,6 +15,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
   const [tables, setTables] = useState<DBTable[]>(sample);
   const [relationships, setRelationships] = useState<DBRelationship[]>([]);
   const [selectedRelationship, setSelectedRelationships] = useState<DBRelationship | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const getTable: ChartDBContext['getTable'] = useCallback(
     (id: string) => tables.find((table) => table.id === id) ?? null,
@@ -224,8 +225,8 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
 
   const removeRelationship: ChartDBContext['removeRelationship'] =
     useCallback(
-      async (id: string, options = {updateHistory: true}) => {
-        return removeRelationships([id], options);
+      async (id: string) => {
+        return removeRelationships([id]);
       },
       [removeRelationships]
     );
@@ -248,11 +249,22 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
       ]
     );
 
+  const openRelationshipInPanel: ChartDBContext['openRelationshipInPanel'] =
+    useCallback(
+      async (
+        id: string,
+      ) => {
+        setExpandedId(id)
+      },
+      [setExpandedId]
+    );
+
   return (
     <chartDBContext.Provider
       value={{
         tables,
         relationships,
+        expandedId,
         selectedRelationship,
         events,
         getTable,
@@ -268,6 +280,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
         removeRelationship,
         removeRelationships,
         updateRelationship,
+        openRelationshipInPanel,
       }}
     >
       {children}

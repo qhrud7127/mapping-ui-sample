@@ -1,26 +1,20 @@
 import {useChartDB} from "../../hooks/use-chartdb.ts";
-import {useCallback, useEffect, useState} from "react";
-import {Accordion, AccordionDetails, AccordionSummary, TextField} from "@mui/material";
-import {Check, ChevronDown, CircleDotDashed, Pencil, Trash2} from "lucide-react";
+import {useCallback, useRef, useState} from "react";
+import {Accordion, AccordionDetails, AccordionSummary} from "@mui/material";
+import {Check, ChevronDown, CircleDotDashed, Pencil, Table2, Trash2} from "lucide-react";
 import {useReactFlow} from "@xyflow/react";
-import {IconTooltipButton} from "../../components/icon-tooltip-button.tsx";
+import {IconTooltipButton} from "../../components/button/icon-tooltip-button.tsx";
+import {Input} from "../../components/input/input.tsx";
 
-export const Relationship = ({relationship}: any) => {
+export const Relationship = ({relationship, expanded, onChange}: any) => {
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [expand, setExpand] = useState<boolean>(false);
-  const toggleAccordion = () => {
-    setExpand((prev) => !prev);
-  };
   const {deleteElements, setEdges, fitView} = useReactFlow();
   const [relationshipName, setRelationshipName] = useState<string>(relationship.name);
   const {
-    selectedRelationship, updateRelationship, removeRelationship, getTable, getField
+    updateRelationship, removeRelationship, getTable, getField
   } = useChartDB();
-
-  useEffect(() => {
-    console.log(relationship)
-    console.log(selectedRelationship);
-  }, [selectedRelationship]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  // const {showAlert} = useDialog();
 
   const targetTable = getTable(relationship.targetTableId);
   const targetField = getField(
@@ -38,6 +32,7 @@ export const Relationship = ({relationship}: any) => {
   const enterEditMode = () => {
     setEditMode(true);
   };
+
 
   const focusOnRelationship = useCallback(
     () => {
@@ -77,6 +72,7 @@ export const Relationship = ({relationship}: any) => {
     ]
   );
 
+
   const editRelationshipName = useCallback(() => {
     if (!editMode) return;
     if (relationshipName.trim() && relationshipName !== relationship.name) {
@@ -100,56 +96,92 @@ export const Relationship = ({relationship}: any) => {
       edges: [{id: relationship.id}],
     });
   }, [relationship.id, removeRelationship, deleteElements]);
+  /*
+
+    const showDeleteConfirmation = useCallback(() => {
+      showAlert({
+        title: 'reorder_diagram_alert.title',
+        description: 'reorder_diagram_alert.description',
+        actionLabel: 'reorder_diagram_alert.reorder',
+        closeLabel: 'reorder_diagram_alert.cancel',
+        onAction: deleteRelationshipHandler,
+      });
+    }, [deleteRelationshipHandler, showAlert]);
+
+  */
 
   return (
-    <Accordion expanded={expand}>
+    <Accordion expanded={expanded}
+               onChange={onChange}
+               className={'text-gray-600 dark:text-primary bg-slate-200 px-2 dark:bg-slate-900 border-b-2'}
+    >
       <AccordionSummary
-        expandIcon={<ChevronDown onClick={toggleAccordion}/>}
+        expandIcon={<ChevronDown className={'text-gray-600 dark:text-primary'}/>}
         aria-controls="panel1-content"
-        id="panel1-header"
         sx={{flexDirection: 'row-reverse', gap: 2}}
       >
-        <div className="group flex h-11 flex-1 items-center justify-between overflow-hidden">
+        <div className="group flex h-7 flex-1 items-center justify-between overflow-hidden m-0">
           <div className="flex min-w-0 flex-1">
             {editMode ? (
-              <TextField
-                className="w-full focus-visible:ring-0"
+              <Input
+                ref={inputRef}
+                autoFocus
+                type="text"
+                placeholder={relationship.name}
                 value={relationshipName}
+                onClick={(e) => e.stopPropagation()}
                 onChange={(e) => setRelationshipName(e.target.value)}
-              ></TextField>
+                className="h-7 w-full focus-visible:ring-0"
+              />
             ) : (
-              <div className="truncate">{relationship.name}</div>
+              <div className="truncate text-sm">{relationship.name}</div>
             )}</div>
           <div className="flex flex-row-reverse">
             {!editMode ? (
               <>
                 <div className="flex flex-row-reverse md:hidden md:group-hover:flex">
                   <IconTooltipButton title={'수정'} clickEvent={enterEditMode}>
-                    <Pencil/>
+                    <Pencil className="size-4"/>
                   </IconTooltipButton>
                   <IconTooltipButton title={'focus'} clickEvent={focusOnRelationship}>
-                    <CircleDotDashed/>
+                    <CircleDotDashed className="size-4"/>
                   </IconTooltipButton>
                   <IconTooltipButton title={'삭제'} clickEvent={deleteRelationshipHandler}>
-                    <Trash2/>
+                    <Trash2 className="size-4"/>
                   </IconTooltipButton>
                 </div>
               </>
             ) : (
               <IconTooltipButton title={'완료'} clickEvent={editRelationshipName}>
-                <Check/>
+                <Check className="size-4"/>
               </IconTooltipButton>
             )}
           </div>
         </div>
       </AccordionSummary>
       <AccordionDetails>
-        <div className="flex gap-2 overflow-hidden text-xs justify-around">
-          <div className="truncate text-left text-sm ">
-            {sourceTable?.name}({sourceField?.name})
+        <div className="flex gap-2 overflow-hidden justify-around truncate text-left text-sm">
+          <div className={"border-2 py-2 px-5 rounded-lg min-w-16"}>
+            <div className="flex gap-2 items-center">
+              <Table2 className="size-3.5 shrink-0"/>
+              <p className="truncate font-bold text-base">
+                {sourceTable?.name}
+              </p>
+            </div>
+            <p className="truncate text-sm">
+              {sourceField?.name} ({sourceField?.type.name})
+            </p>
           </div>
-          <div className="truncate text-left text-sm">
-            {targetTable?.name}({targetField?.name})
+          <div className={"border-2 py-2 px-5 rounded-lg min-w-16"}>
+            <div className="flex gap-2 items-center">
+              <Table2 className="size-3.5 shrink-0"/>
+              <p className="truncate font-bold text-base">
+                {targetTable?.name}
+              </p>
+            </div>
+            <p className="truncate text-sm">
+              {targetField?.name} ({targetField?.type.name})
+            </p>
           </div>
         </div>
       </AccordionDetails>

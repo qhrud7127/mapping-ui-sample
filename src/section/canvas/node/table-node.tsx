@@ -1,16 +1,13 @@
-import React, {useCallback, useState} from 'react';
+import React from 'react';
 import type {Node, NodeProps} from '@xyflow/react';
 import {NodeResizer, useStore} from '@xyflow/react';
 
 import type {EdgeType} from '../canvas.tsx';
-import {IconButton} from "@mui/material";
-import {ChevronDown, ChevronsLeftRight, ChevronsRightLeft, ChevronUp, Pencil, Table2} from "lucide-react";
+import {Table2} from "lucide-react";
 import {cn} from "../../../lib/utils.ts";
 import {DBTable} from "../../../lib/domain/db-table.ts";
 import {RelationshipEdgeType} from "../edge/relationship-edge.tsx";
 import {DBField} from "../../../lib/domain/db-field.ts";
-import {useChartDB} from "../../../hooks/use-chartdb.ts";
-import {useTranslation} from "react-i18next";
 import {TableNodeField} from "./table-node-field.tsx";
 
 export type TableNodeType = Node<
@@ -21,9 +18,7 @@ export type TableNodeType = Node<
 >;
 
 export const MAX_TABLE_SIZE = 450;
-export const MID_TABLE_SIZE = 337;
 export const MIN_TABLE_SIZE = 224;
-export const TABLE_MINIMIZED_FIELDS = 10;
 
 export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
   ({
@@ -32,10 +27,7 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
      id,
      data: {table},
    }) => {
-    const {updateTable, relationships} = useChartDB();
     const edges = useStore((store) => store.edges) as EdgeType[];
-    const [expanded, setExpanded] = useState(false);
-    const {t} = useTranslation();
 
     const selectedRelEdges = edges.filter(
       (edge) =>
@@ -45,26 +37,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
     ) as RelationshipEdgeType[];
 
     const focused = !!selected && !dragging;
-
-    const expandTable = useCallback(() => {
-      updateTable(table.id, {
-        width:
-          (table.width ?? MIN_TABLE_SIZE) < MID_TABLE_SIZE
-            ? MID_TABLE_SIZE
-            : MAX_TABLE_SIZE,
-      });
-    }, [table.id, table.width, updateTable]);
-
-    const shrinkTable = useCallback(() => {
-      updateTable(table.id, {
-        width: MIN_TABLE_SIZE,
-      });
-    }, [table.id, updateTable]);
-
-    const toggleExpand = () => {
-      setExpanded(!expanded);
-    };
-
 
     return (
       <div
@@ -94,35 +66,9 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
               {table.name}
             </p>
           </div>
-          <div className="hidden shrink-0 flex-row group-hover:flex">
-            <IconButton
-              className="min-w-8 p-0 text-slate-500 hover:bg-primary-foreground hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
-            >
-              <Pencil className="size-4"/>
-            </IconButton>
-            <IconButton
-              className="min-w-8 p-0 text-slate-500 hover:bg-primary-foreground hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
-              onClick={
-                table.width !== MAX_TABLE_SIZE
-                  ? expandTable
-                  : shrinkTable
-              }
-            >
-              {table.width !== MAX_TABLE_SIZE ? (
-                <ChevronsLeftRight className="size-4"/>
-              ) : (
-                <ChevronsRightLeft className="size-4"/>
-              )}
-            </IconButton>
-          </div>
         </div>
         <div
           className="transition-[max-height] duration-200 ease-in-out"
-          style={{
-            maxHeight: expanded
-              ? `${table.fields.length * 2}rem` // h-8 per field
-              : `${TABLE_MINIMIZED_FIELDS * 2}rem`, // h-8 per field
-          }}
         >
           {table.fields.map((field: DBField) => (
             <TableNodeField
@@ -142,24 +88,6 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
             />
           ))}
         </div>
-        {table.fields.length > TABLE_MINIMIZED_FIELDS && (
-          <div
-            className="z-10 flex h-8 cursor-pointer items-center justify-center rounded-b-md border-t text-xs text-muted-foreground transition-colors duration-200 hover:bg-slate-100 dark:hover:bg-slate-800"
-            onClick={toggleExpand}
-          >
-            {expanded ? (
-              <>
-                <ChevronUp className="mr-1 size-3.5"/>
-                {t('show_less')}
-              </>
-            ) : (
-              <>
-                <ChevronDown className="mr-1 size-3.5"/>
-                {t('show_more')}
-              </>
-            )}
-          </div>
-        )}
       </div>
     );
   }

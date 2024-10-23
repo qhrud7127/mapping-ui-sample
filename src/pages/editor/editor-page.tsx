@@ -11,10 +11,12 @@ export const EditorPage = () => (
     <ThemeProvider> {/*theme setting*/}
       <ChartDBProvider>
         <ReactFlowProvider>
+          {/*<DialogProvider>*/}
           <div style={{display: 'flex', flexDirection: 'row'}}>
             <RelationshipList/>
             <Canvas/>
           </div>
+          {/*</DialogProvider>*/}
         </ReactFlowProvider>
       </ChartDBProvider>
     </ThemeProvider>
