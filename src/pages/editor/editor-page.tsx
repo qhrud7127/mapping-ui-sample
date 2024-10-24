@@ -4,6 +4,7 @@ import {ReactFlowProvider} from "@xyflow/react";
 import {Canvas} from "../../section/canvas/canvas.tsx";
 import {LocalConfigProvider} from "../../context/local-config/local-config-provider.tsx";
 import {RelationshipList} from "../../section/panel/relationship-list.tsx";
+import {DialogProvider} from "../../context/dialog/dialog-provider.tsx";
 
 
 export const EditorPage = () => (
@@ -11,12 +12,12 @@ export const EditorPage = () => (
     <ThemeProvider> {/*theme setting*/}
       <ChartDBProvider>
         <ReactFlowProvider>
-          {/*<DialogProvider>*/}
-          <div style={{display: 'flex', flexDirection: 'row'}}>
-            <RelationshipList/>
-            <Canvas/>
-          </div>
-          {/*</DialogProvider>*/}
+          <DialogProvider>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+              <RelationshipList/>
+              <Canvas/>
+            </div>
+          </DialogProvider>
         </ReactFlowProvider>
       </ChartDBProvider>
     </ThemeProvider>

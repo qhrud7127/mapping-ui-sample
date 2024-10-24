@@ -5,6 +5,7 @@ import {Check, ChevronDown, CircleDotDashed, Pencil, Table2, Trash2} from "lucid
 import {useReactFlow} from "@xyflow/react";
 import {IconTooltipButton} from "../../components/button/icon-tooltip-button.tsx";
 import {Input} from "../../components/input/input.tsx";
+import {useDialog} from "../../hooks/use-dialog.ts";
 
 export const Relationship = ({relationship, expanded, onChange}: any) => {
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -14,7 +15,7 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
     updateRelationship, removeRelationship, getTable, getField
   } = useChartDB();
   const inputRef = useRef<HTMLInputElement>(null);
-  // const {showAlert} = useDialog();
+  const {showAlert} = useDialog();
 
   const targetTable = getTable(relationship.targetTableId);
   const targetField = getField(
@@ -96,19 +97,17 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
       edges: [{id: relationship.id}],
     });
   }, [relationship.id, removeRelationship, deleteElements]);
-  /*
 
-    const showDeleteConfirmation = useCallback(() => {
-      showAlert({
-        title: 'reorder_diagram_alert.title',
-        description: 'reorder_diagram_alert.description',
-        actionLabel: 'reorder_diagram_alert.reorder',
-        closeLabel: 'reorder_diagram_alert.cancel',
-        onAction: deleteRelationshipHandler,
-      });
-    }, [deleteRelationshipHandler, showAlert]);
+  const showDeleteConfirmation = useCallback(() => {
+    showAlert({
+      title: '삭제',
+      description: '선택한 항목을 삭제하시겠습니까?',
+      actionLabel: '삭제',
+      closeLabel: '취소',
+      onAction: deleteRelationshipHandler,
+    });
+  }, [deleteRelationshipHandler, showAlert]);
 
-  */
 
   return (
     <Accordion expanded={expanded}
@@ -146,7 +145,7 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
                   <IconTooltipButton title={'focus'} clickEvent={focusOnRelationship}>
                     <CircleDotDashed className="size-4"/>
                   </IconTooltipButton>
-                  <IconTooltipButton title={'삭제'} clickEvent={deleteRelationshipHandler}>
+                  <IconTooltipButton title={'삭제'} clickEvent={showDeleteConfirmation}>
                     <Trash2 className="size-4"/>
                   </IconTooltipButton>
                 </div>
