@@ -1,0 +1,11 @@
+extend type Mutation {
+    saveMappingData(path: String, mappingData: JSON): String
+}
+
+extend type Query {
+    loadMappingData(path: String): MappingData
+}
+
+type MappingData {
+    id: ID
+}

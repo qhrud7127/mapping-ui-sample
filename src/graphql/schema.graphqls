@@ -1,0 +1,17 @@
+scalar JSON
+scalar Date
+scalar DateTime
+scalar FlowDiagram
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+
+}
+
+type Mutation {
+
+}

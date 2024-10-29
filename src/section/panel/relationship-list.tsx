@@ -1,6 +1,7 @@
 import {useChartDB} from "../../hooks/use-chartdb.ts";
 import {Relationship} from "./relationship.tsx";
 import {useEffect, useState} from "react";
+import {ControlButtons} from "./control-buttons.tsx";
 
 export const RelationshipList = () => {
   const {
@@ -21,6 +22,7 @@ export const RelationshipList = () => {
   return (
     <div style={{width: '20vw', borderRight: '2px solid gray', padding: '20px'}}
          className={'bg-slate-200 dark:bg-slate-950'}>
+      <ControlButtons/>
       {
         relationships.map((relationship) => (
           <Relationship key={relationship.id}

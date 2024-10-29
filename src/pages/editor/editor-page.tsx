@@ -5,6 +5,8 @@ import {Canvas} from "../../section/canvas/canvas.tsx";
 import {LocalConfigProvider} from "../../context/local-config/local-config-provider.tsx";
 import {RelationshipList} from "../../section/panel/relationship-list.tsx";
 import {DialogProvider} from "../../context/dialog/dialog-provider.tsx";
+import client from "../../../apollo-client.ts";
+import {ApolloProvider} from "@apollo/client";
 
 
 export const EditorPage = () => (
@@ -13,10 +15,12 @@ export const EditorPage = () => (
       <ChartDBProvider>
         <ReactFlowProvider>
           <DialogProvider>
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-              <RelationshipList/>
-              <Canvas/>
-            </div>
+            <ApolloProvider client={client}>
+              <div style={{display: 'flex', flexDirection: 'row'}}>
+                <RelationshipList/>
+                <Canvas/>
+              </div>
+            </ApolloProvider>
           </DialogProvider>
         </ReactFlowProvider>
       </ChartDBProvider>
