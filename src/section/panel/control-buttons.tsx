@@ -4,24 +4,33 @@ import {useChartDB} from "../../hooks/use-chartdb.ts";
 import {generateId} from "../../lib/utils.ts";
 
 export const ControlButtons = () => {
-  const {saveMappingData} = useMappingDataService()
-  const {relationships, tables} = useChartDB()
+  const fileName = 'mapping'
+  const path = 'C:\\Users\\User\\vtw\\DnAProjects\\mapping-test\\' + fileName + '.yaml'
+  const {saveMappingData, loadMappingDataQuery} = useMappingDataService()
+  const {relationships, tables, setTables, setRelationships} = useChartDB()
 
   const saveData = () => {
     console.log(tables)
-    console.log(relationships)
-    const fileName = 'mapping'
     saveMappingData({
       variables: {
-        path: 'C:\\Users\\User\\vtw\\DnAProjects\\mapping-test\\' + fileName + '.yaml',
+        path: path,
         mappingData: {id: generateId(), name: 'test', objects: tables, relationships: relationships}
       }
     })
   }
+
+  const loadData = () => {
+    loadMappingDataQuery({variables: {path: path}, fetchPolicy: "no-cache",}).then((e) => {
+      const mappingData = e.data.loadMappingData;
+      setTables(mappingData?.objects)
+      setRelationships(mappingData?.relationships)
+    });
+  }
+
   return (
     <>
       <Button onClick={saveData}>save</Button>
-      <Button>select file</Button>
+      <Button onClick={loadData}>select file</Button>
     </>
   )
 }

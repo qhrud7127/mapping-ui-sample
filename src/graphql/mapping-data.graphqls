@@ -8,4 +8,38 @@ extend type Query {
 
 type MappingData {
     id: ID
+    name: String
+    objects: [MappingObject]
+    relationships: [Relationship]
+}
+
+type MappingObject {
+    id: String
+    name: String
+    fields: [Field]
+    x: String
+    y: String
+    color: String
+}
+
+type Relationship {
+    id: String
+    name: String
+    sourceCardinality: String
+    sourceFieldId: String
+    sourceTableId: String
+    targetCardinality: String
+    targetFieldId: String
+    targetTableId: String
+}
+
+type Field {
+    id: String
+    name: String
+    type: FieldType
+}
+
+type FieldType {
+    id: String
+    name: String
 }

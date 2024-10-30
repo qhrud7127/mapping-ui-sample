@@ -36,7 +36,9 @@ export type ChartDBEvent =
 
 export interface ChartDBContext {
   tables: DBTable[];
+  setTables: (tables: DBTable[]) => void;
   relationships: DBRelationship[];
+  setRelationships: (relationships: DBRelationship[]) => void;
   selectedRelationship: DBRelationship | null;
   expandedId: string | null;
   events: EventEmitter<ChartDBEvent>;
@@ -99,7 +101,9 @@ export interface ChartDBContext {
 
 export const chartDBContext = createContext<ChartDBContext>({
   tables: [],
+  setTables: emptyFn,
   relationships: [],
+  setRelationships: emptyFn,
   selectedRelationship: null,
   expandedId: null,
   events: new EventEmitter(),

@@ -1,9 +1,35 @@
-import {gql, useMutation, useQuery} from "@apollo/client";
+import {gql, useLazyQuery, useMutation} from "@apollo/client";
 
 export const LOAD_MAPPING_DATA = gql`
     query LoadMappingData($path: String!) {
         loadMappingData(path: $path) {
             id
+            name
+            objects {
+                id
+                name
+                fields {
+                    id
+                    name
+                    type {
+                        id
+                        name
+                    }
+                }
+                x
+                y
+                color
+            }
+            relationships {
+                id
+                name
+                sourceCardinality
+                sourceFieldId
+                sourceTableId
+                targetCardinality
+                targetFieldId
+                targetTableId
+            }
         }
     }
 `;
@@ -16,8 +42,8 @@ export const SAVE_MAPPING_DATA = gql`
 `;
 
 
-export const useMappingDataService = (path?: string) => {
-  const loadMappingDataQuery = useQuery(LOAD_MAPPING_DATA, {variables: {path: path}, fetchPolicy: "no-cache"});
+export const useMappingDataService = () => {
+  const [loadMappingDataQuery] = useLazyQuery(LOAD_MAPPING_DATA);
   const [saveMappingData, saveMappingDataResult] = useMutation(SAVE_MAPPING_DATA);
 
   return {

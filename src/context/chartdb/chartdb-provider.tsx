@@ -263,7 +263,9 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     <chartDBContext.Provider
       value={{
         tables,
+        setTables,
         relationships,
+        setRelationships,
         expandedId,
         selectedRelationship,
         events,
