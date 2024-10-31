@@ -1,4 +1,4 @@
-import {useChartDB} from "../../hooks/use-chartdb.ts";
+import {useMapper} from "../../hooks/use-mapper.ts";
 import {useCallback, useRef, useState} from "react";
 import {Accordion, AccordionDetails, AccordionSummary} from "@mui/material";
 import {Check, ChevronDown, CircleDotDashed, Pencil, Table2, Trash2} from "lucide-react";
@@ -13,7 +13,7 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
   const [relationshipName, setRelationshipName] = useState<string>(relationship.name);
   const {
     updateRelationship, removeRelationship, getTable, getField
-  } = useChartDB();
+  } = useMapper();
   const inputRef = useRef<HTMLInputElement>(null);
   const {showAlert} = useDialog();
 

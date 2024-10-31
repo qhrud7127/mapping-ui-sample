@@ -20,7 +20,7 @@ import {MIN_TABLE_SIZE, TableNode, TableNodeType} from "./node/table-node.tsx";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {sample} from "../../data/sample.ts";
 import {DBTable} from "../../lib/domain/db-table.ts";
-import {useChartDB} from "../../hooks/use-chartdb.ts";
+import {useMapper} from "../../hooks/use-mapper.ts";
 import {LEFT_HANDLE_ID_PREFIX, TARGET_ID_PREFIX} from "./node/table-node-field.tsx";
 import {useToast} from "../../components/toast/use-toast.ts";
 import equal from 'fast-deep-equal';
@@ -66,7 +66,7 @@ export const Canvas = () => {
     removeRelationships,
     getField,
     createRelationship
-  } = useChartDB();
+  } = useMapper();
 
   const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeType>(initialEdges);
 

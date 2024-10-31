@@ -1,4 +1,4 @@
-import {useChartDB} from "../../hooks/use-chartdb.ts";
+import {useMapper} from "../../hooks/use-mapper.ts";
 import {Relationship} from "./relationship.tsx";
 import {useEffect, useState} from "react";
 import {ControlButtons} from "./control-buttons.tsx";
@@ -7,7 +7,7 @@ export const RelationshipList = () => {
   const {
     relationships,
     expandedId,
-  } = useChartDB();
+  } = useMapper();
 
   const [expanded, setExpanded] = useState<string | null>(expandedId);
 

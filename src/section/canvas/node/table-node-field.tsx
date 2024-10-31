@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useRef} from 'react';
 import {Handle, Position, useConnection, useUpdateNodeInternals,} from '@xyflow/react';
-import {useChartDB} from "../../../hooks/use-chartdb.ts";
+import {useMapper} from "../../../hooks/use-mapper.ts";
 import {DBField} from "../../../lib/domain/db-field.ts";
 
 
@@ -19,7 +19,7 @@ export interface TableNodeFieldProps {
 
 export const TableNodeField: React.FC<TableNodeFieldProps> = React.memo(
   ({field, focused, tableNodeId, highlighted, visible, isConnectable}) => {
-    const {relationships} = useChartDB();
+    const {relationships} = useMapper();
     const updateNodeInternals = useUpdateNodeInternals();
     const connection = useConnection();
     const isTarget = useMemo(

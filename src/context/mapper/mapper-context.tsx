@@ -7,7 +7,7 @@ import {Diagram} from "../../lib/domain/diagram.ts";
 import {DBRelationship} from "../../lib/domain/db-relationship.ts";
 import {EventEmitter} from "ahooks/lib/useEventEmitter";
 
-export type ChartDBEventType =
+export type MapperEventType =
   | 'add_tables'
   | 'update_table'
   | 'remove_tables'
@@ -15,33 +15,33 @@ export type ChartDBEventType =
   | 'remove_field'
   | 'load_diagram';
 
-export type ChartDBEventBase<T extends ChartDBEventType, D> = {
+export type MapperEventBase<T extends MapperEventType, D> = {
   action: T;
   data: D;
 };
 
-export type UpdateTableEvent = ChartDBEventBase<
+export type UpdateTableEvent = MapperEventBase<
   'update_table',
   { id: string; table: Partial<DBTable> }
 >;
 
-export type LoadDiagramEvent = ChartDBEventBase<
+export type LoadDiagramEvent = MapperEventBase<
   'load_diagram',
   { diagram: Diagram }
 >;
 
-export type ChartDBEvent =
+export type MapperEvent =
   | UpdateTableEvent
   | LoadDiagramEvent;
 
-export interface ChartDBContext {
+export interface MapperContext {
   tables: DBTable[];
   setTables: (tables: DBTable[]) => void;
   relationships: DBRelationship[];
   setRelationships: (relationships: DBRelationship[]) => void;
   selectedRelationship: DBRelationship | null;
   expandedId: string | null;
-  events: EventEmitter<ChartDBEvent>;
+  events: EventEmitter<MapperEvent>;
 
   // General operations
   // loadDiagram: (diagramId: string) => Promise<Diagram | undefined>;
@@ -99,7 +99,7 @@ export interface ChartDBContext {
   ) => Promise<void>;
 }
 
-export const chartDBContext = createContext<ChartDBContext>({
+export const mapperContext = createContext<MapperContext>({
   tables: [],
   setTables: emptyFn,
   relationships: [],

@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from 'react';
 
-import type {ChartDBContext, ChartDBEvent} from './chartdb-context';
-import {chartDBContext} from './chartdb-context';
+import type {MapperContext, MapperEvent} from './mapper-context.tsx';
+import {mapperContext} from './mapper-context.tsx';
 
 import {useEventEmitter} from 'ahooks';
 import {DBTable} from "../../lib/domain/db-table.ts";
@@ -10,19 +10,19 @@ import {DBRelationship} from "../../lib/domain/db-relationship.ts";
 import {DBField} from "../../lib/domain/db-field.ts";
 import {sample} from "../../data/sample.ts";
 
-export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) => {
-  const events = useEventEmitter<ChartDBEvent>();
+export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) => {
+  const events = useEventEmitter<MapperEvent>();
   const [tables, setTables] = useState<DBTable[]>(sample);
   const [relationships, setRelationships] = useState<DBRelationship[]>([]);
   const [selectedRelationship, setSelectedRelationships] = useState<DBRelationship | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const getTable: ChartDBContext['getTable'] = useCallback(
+  const getTable: MapperContext['getTable'] = useCallback(
     (id: string) => tables.find((table) => table.id === id) ?? null,
     [tables]
   );
 
-  const updateTable: ChartDBContext['updateTable'] = useCallback(
+  const updateTable: MapperContext['updateTable'] = useCallback(
     async (
       id: string,
       table: Partial<DBTable>,
@@ -43,7 +43,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     ]
   );
 
-  const updateTablesState: ChartDBContext['updateTablesState'] = useCallback(
+  const updateTablesState: MapperContext['updateTablesState'] = useCallback(
     async (
       updateFn: (tables: DBTable[]) => PartialExcept<DBTable, 'id'>[],
       options = {updateHistory: true, forceOverride: false}
@@ -103,7 +103,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     ]
   );
 
-  const getField: ChartDBContext['getField'] = useCallback(
+  const getField: MapperContext['getField'] = useCallback(
     (tableId: string, fieldId: string) => {
       const table = getTable(tableId);
       return table?.fields.find((f) => f.id === fieldId) ?? null;
@@ -111,7 +111,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     [getTable]
   );
 
-  const updateField: ChartDBContext['updateField'] = useCallback(
+  const updateField: MapperContext['updateField'] = useCallback(
     async (
       tableId: string,
       fieldId: string,
@@ -133,7 +133,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     [setTables, getField]
   );
 
-  const addRelationships: ChartDBContext['addRelationships'] = useCallback(
+  const addRelationships: MapperContext['addRelationships'] = useCallback(
     async (
       relationships: DBRelationship[],
     ) => {
@@ -145,7 +145,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     [setRelationships]
   );
 
-  const addRelationship: ChartDBContext['addRelationship'] = useCallback(
+  const addRelationship: MapperContext['addRelationship'] = useCallback(
     async (
       relationship: DBRelationship,
     ) => {
@@ -154,7 +154,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     [addRelationships]
   );
 
-  const createRelationship: ChartDBContext['createRelationship'] =
+  const createRelationship: MapperContext['createRelationship'] =
     useCallback(
       async ({
                sourceTableId,
@@ -192,14 +192,14 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
       [addRelationship, getTable]
     );
 
-  const getRelationship: ChartDBContext['getRelationship'] = useCallback(
+  const getRelationship: MapperContext['getRelationship'] = useCallback(
     (id: string) =>
       relationships.find((relationship) => relationship.id === id) ??
       null,
     [relationships]
   );
 
-  const selectRelationShip: ChartDBContext['selectRelationShip'] = useCallback(
+  const selectRelationShip: MapperContext['selectRelationShip'] = useCallback(
     async (id: string) => {
       const selected = relationships.find((relationship) => relationship.id === id) ?? null
       setSelectedRelationships(selected)
@@ -207,7 +207,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     [relationships]
   );
 
-  const removeRelationships: ChartDBContext['removeRelationships'] =
+  const removeRelationships: MapperContext['removeRelationships'] =
     useCallback(
       async (ids: string[]) => {
 
@@ -223,7 +223,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
       ]
     );
 
-  const removeRelationship: ChartDBContext['removeRelationship'] =
+  const removeRelationship: MapperContext['removeRelationship'] =
     useCallback(
       async (id: string) => {
         return removeRelationships([id]);
@@ -231,7 +231,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
       [removeRelationships]
     );
 
-  const updateRelationship: ChartDBContext['updateRelationship'] =
+  const updateRelationship: MapperContext['updateRelationship'] =
     useCallback(
       async (
         id: string,
@@ -249,7 +249,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
       ]
     );
 
-  const openRelationshipInPanel: ChartDBContext['openRelationshipInPanel'] =
+  const openRelationshipInPanel: MapperContext['openRelationshipInPanel'] =
     useCallback(
       async (
         id: string,
@@ -260,7 +260,7 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
     );
 
   return (
-    <chartDBContext.Provider
+    <mapperContext.Provider
       value={{
         tables,
         setTables,
@@ -286,6 +286,6 @@ export const ChartDBProvider: React.FC<React.PropsWithChildren> = ({children}) =
       }}
     >
       {children}
-    </chartDBContext.Provider>
+    </mapperContext.Provider>
   );
 };

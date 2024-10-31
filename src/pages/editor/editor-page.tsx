@@ -1,5 +1,5 @@
 import {ThemeProvider} from "../../context/theme/theme-provider.tsx";
-import {ChartDBProvider} from "../../context/chartdb/chartdb-provider.tsx";
+import {MapperProvider} from "../../context/mapper/mapper-provider.tsx";
 import {ReactFlowProvider} from "@xyflow/react";
 import {Canvas} from "../../section/canvas/canvas.tsx";
 import {LocalConfigProvider} from "../../context/local-config/local-config-provider.tsx";
@@ -12,7 +12,7 @@ import {ApolloProvider} from "@apollo/client";
 export const EditorPage = () => (
   <LocalConfigProvider> {/*theme local storage*/}
     <ThemeProvider> {/*theme setting*/}
-      <ChartDBProvider>
+      <MapperProvider>
         <ReactFlowProvider>
           <DialogProvider>
             <ApolloProvider client={client}>
@@ -23,7 +23,7 @@ export const EditorPage = () => (
             </ApolloProvider>
           </DialogProvider>
         </ReactFlowProvider>
-      </ChartDBProvider>
+      </MapperProvider>
     </ThemeProvider>
   </LocalConfigProvider>
 )
