@@ -1,4 +1,4 @@
-import {useMapper} from "../../hooks/use-mapper.ts";
+import {useDataMapper} from "../../hooks/use-data-mapper.ts";
 import {Relationship} from "./relationship.tsx";
 import {useEffect, useState} from "react";
 import {ControlButtons} from "./control-buttons.tsx";
@@ -7,7 +7,7 @@ export const RelationshipList = () => {
   const {
     relationships,
     expandedId,
-  } = useMapper();
+  } = useDataMapper();
 
   const [expanded, setExpanded] = useState<string | null>(expandedId);
 

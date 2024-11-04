@@ -1,4 +1,6 @@
-export interface DBRelationship {
+import {Transformation} from "./transformation.ts";
+
+export interface Relationship {
   id: string;
   name: string;
   sourceSchema?: string;
@@ -10,6 +12,7 @@ export interface DBRelationship {
   sourceCardinality: Cardinality;
   targetCardinality: Cardinality;
   createdAt: number;
+  transformations: Transformation[];
 }
 
 export type RelationshipType =

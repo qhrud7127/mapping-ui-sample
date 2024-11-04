@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useRef} from 'react';
 import {Handle, Position, useConnection, useUpdateNodeInternals,} from '@xyflow/react';
-import {useMapper} from "../../../hooks/use-mapper.ts";
-import {DBField} from "../../../lib/domain/db-field.ts";
+import {useDataMapper} from "../../../hooks/use-data-mapper.ts";
+import {Field} from "../../../lib/domain/field.ts";
 
 
 export const LEFT_HANDLE_ID_PREFIX = 'left_rel_';
@@ -10,7 +10,7 @@ export const TARGET_ID_PREFIX = 'target_rel_';
 
 export interface TableNodeFieldProps {
   tableNodeId: string;
-  field: DBField;
+  field: Field;
   focused: boolean;
   highlighted: boolean;
   visible: boolean;
@@ -19,7 +19,7 @@ export interface TableNodeFieldProps {
 
 export const TableNodeField: React.FC<TableNodeFieldProps> = React.memo(
   ({field, focused, tableNodeId, highlighted, visible, isConnectable}) => {
-    const {relationships} = useMapper();
+    const {relationships} = useDataMapper();
     const updateNodeInternals = useUpdateNodeInternals();
     const connection = useConnection();
     const isTarget = useMemo(

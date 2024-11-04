@@ -19,8 +19,8 @@ import '@xyflow/react/dist/style.css';
 import {MIN_TABLE_SIZE, TableNode, TableNodeType} from "./node/table-node.tsx";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {sample} from "../../data/sample.ts";
-import {DBTable} from "../../lib/domain/db-table.ts";
-import {useMapper} from "../../hooks/use-mapper.ts";
+import {Table} from "../../lib/domain/table.ts";
+import {useDataMapper} from "../../hooks/use-data-mapper.ts";
 import {LEFT_HANDLE_ID_PREFIX, TARGET_ID_PREFIX} from "./node/table-node-field.tsx";
 import {useToast} from "../../components/toast/use-toast.ts";
 import equal from 'fast-deep-equal';
@@ -36,7 +36,7 @@ const edgeTypes = {
 };
 
 const tableToTableNode = (
-  table: DBTable,
+  table: Table,
 ): TableNodeType => ({
   id: table.id,
   type: 'table',
@@ -66,7 +66,7 @@ export const Canvas = () => {
     removeRelationships,
     getField,
     createRelationship
-  } = useMapper();
+  } = useDataMapper();
 
   const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeType>(initialEdges);
 

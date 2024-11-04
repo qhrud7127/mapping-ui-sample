@@ -1,10 +1,10 @@
 import {createContext} from 'react';
 
 import {emptyFn} from "../../lib/utils.ts";
-import {DBTable} from "../../lib/domain/db-table.ts";
-import {DBField} from "../../lib/domain/db-field.ts";
+import {Table} from "../../lib/domain/table.ts";
+import {Field} from "../../lib/domain/field.ts";
 import {Diagram} from "../../lib/domain/diagram.ts";
-import {DBRelationship} from "../../lib/domain/db-relationship.ts";
+import {Relationship} from "../../lib/domain/relationship.ts";
 import {EventEmitter} from "ahooks/lib/useEventEmitter";
 
 export type MapperEventType =
@@ -22,7 +22,7 @@ export type MapperEventBase<T extends MapperEventType, D> = {
 
 export type UpdateTableEvent = MapperEventBase<
   'update_table',
-  { id: string; table: Partial<DBTable> }
+  { id: string; table: Partial<Table> }
 >;
 
 export type LoadDiagramEvent = MapperEventBase<
@@ -34,12 +34,12 @@ export type MapperEvent =
   | UpdateTableEvent
   | LoadDiagramEvent;
 
-export interface MapperContext {
-  tables: DBTable[];
-  setTables: (tables: DBTable[]) => void;
-  relationships: DBRelationship[];
-  setRelationships: (relationships: DBRelationship[]) => void;
-  selectedRelationship: DBRelationship | null;
+export interface DataMapperContext {
+  tables: Table[];
+  setTables: (tables: Table[]) => void;
+  relationships: Relationship[];
+  setRelationships: (relationships: Relationship[]) => void;
+  selectedRelationship: Relationship | null;
   expandedId: string | null;
   events: EventEmitter<MapperEvent>;
 
@@ -47,23 +47,23 @@ export interface MapperContext {
   // loadDiagram: (diagramId: string) => Promise<Diagram | undefined>;
 
   // Table operations
-  getTable: (id: string) => DBTable | null;
+  getTable: (id: string) => Table | null;
   updateTable: (
     id: string,
-    table: Partial<DBTable>,
+    table: Partial<Table>,
     options?: { updateHistory: boolean }
   ) => Promise<void>;
   updateTablesState: (
-    updateFn: (tables: DBTable[]) => PartialExcept<DBTable, 'id'>[],
+    updateFn: (tables: Table[]) => PartialExcept<Table, 'id'>[],
     options?: { updateHistory: boolean; forceOverride?: boolean }
   ) => Promise<void>;
 
   // Field operations
-  getField: (tableId: string, fieldId: string) => DBField | null;
+  getField: (tableId: string, fieldId: string) => Field | null;
   updateField: (
     tableId: string,
     fieldId: string,
-    field: Partial<DBField>,
+    field: Partial<Field>,
     options?: { updateHistory: boolean }
   ) => Promise<void>;
 
@@ -73,16 +73,16 @@ export interface MapperContext {
     targetTableId: string;
     sourceFieldId: string;
     targetFieldId: string;
-  }) => Promise<DBRelationship>;
+  }) => Promise<Relationship>;
   addRelationship: (
-    relationship: DBRelationship,
+    relationship: Relationship,
     options?: { updateHistory: boolean }
   ) => Promise<void>;
   addRelationships: (
-    relationships: DBRelationship[],
+    relationships: Relationship[],
     options?: { updateHistory: boolean }
   ) => Promise<void>;
-  getRelationship: (id: string) => DBRelationship | null;
+  getRelationship: (id: string) => Relationship | null;
   selectRelationShip: (id: string) => Promise<void>;
   removeRelationship: (
     id: string,
@@ -92,14 +92,14 @@ export interface MapperContext {
   ) => Promise<void>;
   updateRelationship: (
     id: string,
-    relationship: Partial<DBRelationship>,
+    relationship: Partial<Relationship>,
   ) => Promise<void>;
   openRelationshipInPanel: (
     id: string,
   ) => Promise<void>;
 }
 
-export const mapperContext = createContext<MapperContext>({
+export const dataMapperContext = createContext<DataMapperContext>({
   tables: [],
   setTables: emptyFn,
   relationships: [],

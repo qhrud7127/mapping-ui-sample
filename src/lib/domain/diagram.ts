@@ -1,11 +1,11 @@
-import type {DBRelationship} from './db-relationship';
-import type {DBTable} from './db-table';
+import type {Relationship} from './relationship.ts';
+import type {Table} from './table.ts';
 
 export interface Diagram {
   id: string;
   name: string;
-  tables?: DBTable[];
-  relationships?: DBRelationship[];
+  tables?: Table[];
+  relationships?: Relationship[];
   createdAt: Date;
   updatedAt: Date;
 }

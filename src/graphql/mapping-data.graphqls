@@ -31,6 +31,7 @@ type Relationship {
     targetCardinality: String
     targetFieldId: String
     targetTableId: String
+    transformations: [Transformation]
 }
 
 type Field {
@@ -42,4 +43,10 @@ type Field {
 type FieldType {
     id: String
     name: String
+}
+
+type Transformation {
+    id: String
+    type: String
+    value: String
 }

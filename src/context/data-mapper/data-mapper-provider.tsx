@@ -1,31 +1,31 @@
 import React, {useCallback, useState} from 'react';
 
-import type {MapperContext, MapperEvent} from './mapper-context.tsx';
-import {mapperContext} from './mapper-context.tsx';
+import type {DataMapperContext, MapperEvent} from './data-mapper-context.tsx';
+import {dataMapperContext} from './data-mapper-context.tsx';
 
 import {useEventEmitter} from 'ahooks';
-import {DBTable} from "../../lib/domain/db-table.ts";
+import {Table} from "../../lib/domain/table.ts";
 import {deepCopy, generateId} from "../../lib/utils.ts";
-import {DBRelationship} from "../../lib/domain/db-relationship.ts";
-import {DBField} from "../../lib/domain/db-field.ts";
+import {Relationship} from "../../lib/domain/relationship.ts";
+import {Field} from "../../lib/domain/field.ts";
 import {sample} from "../../data/sample.ts";
 
-export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) => {
+export const DataMapperProvider: React.FC<React.PropsWithChildren> = ({children}) => {
   const events = useEventEmitter<MapperEvent>();
-  const [tables, setTables] = useState<DBTable[]>(sample);
-  const [relationships, setRelationships] = useState<DBRelationship[]>([]);
-  const [selectedRelationship, setSelectedRelationships] = useState<DBRelationship | null>(null);
+  const [tables, setTables] = useState<Table[]>(sample);
+  const [relationships, setRelationships] = useState<Relationship[]>([]);
+  const [selectedRelationship, setSelectedRelationships] = useState<Relationship | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const getTable: MapperContext['getTable'] = useCallback(
+  const getTable: DataMapperContext['getTable'] = useCallback(
     (id: string) => tables.find((table) => table.id === id) ?? null,
     [tables]
   );
 
-  const updateTable: MapperContext['updateTable'] = useCallback(
+  const updateTable: DataMapperContext['updateTable'] = useCallback(
     async (
       id: string,
-      table: Partial<DBTable>,
+      table: Partial<Table>,
     ) => {
       setTables((tables) =>
         tables.map((t) => (t.id === id ? {...t, ...table} : t))
@@ -43,15 +43,15 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
     ]
   );
 
-  const updateTablesState: MapperContext['updateTablesState'] = useCallback(
+  const updateTablesState: DataMapperContext['updateTablesState'] = useCallback(
     async (
-      updateFn: (tables: DBTable[]) => PartialExcept<DBTable, 'id'>[],
+      updateFn: (tables: Table[]) => PartialExcept<Table, 'id'>[],
       options = {updateHistory: true, forceOverride: false}
     ) => {
-      const updateTables = (prevTables: DBTable[]) => {
+      const updateTables = (prevTables: Table[]) => {
         const updatedTables = updateFn(prevTables);
         if (options.forceOverride) {
-          return updatedTables as DBTable[];
+          return updatedTables as Table[];
         }
 
         return prevTables
@@ -103,7 +103,7 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
     ]
   );
 
-  const getField: MapperContext['getField'] = useCallback(
+  const getField: DataMapperContext['getField'] = useCallback(
     (tableId: string, fieldId: string) => {
       const table = getTable(tableId);
       return table?.fields.find((f) => f.id === fieldId) ?? null;
@@ -111,11 +111,11 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
     [getTable]
   );
 
-  const updateField: MapperContext['updateField'] = useCallback(
+  const updateField: DataMapperContext['updateField'] = useCallback(
     async (
       tableId: string,
       fieldId: string,
-      field: Partial<DBField>,
+      field: Partial<Field>,
     ) => {
       setTables((tables) =>
         tables.map((table) =>
@@ -133,9 +133,9 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
     [setTables, getField]
   );
 
-  const addRelationships: MapperContext['addRelationships'] = useCallback(
+  const addRelationships: DataMapperContext['addRelationships'] = useCallback(
     async (
-      relationships: DBRelationship[],
+      relationships: Relationship[],
     ) => {
       setRelationships((currentRelationships) => [
         ...currentRelationships,
@@ -145,16 +145,16 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
     [setRelationships]
   );
 
-  const addRelationship: MapperContext['addRelationship'] = useCallback(
+  const addRelationship: DataMapperContext['addRelationship'] = useCallback(
     async (
-      relationship: DBRelationship,
+      relationship: Relationship,
     ) => {
       return addRelationships([relationship]);
     },
     [addRelationships]
   );
 
-  const createRelationship: MapperContext['createRelationship'] =
+  const createRelationship: DataMapperContext['createRelationship'] =
     useCallback(
       async ({
                sourceTableId,
@@ -171,7 +171,7 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
 
         const sourceFieldName = sourceField?.name ?? '';
 
-        const relationship: DBRelationship = {
+        const relationship: Relationship = {
           id: generateId(),
           name: `${sourceTableName}_${sourceFieldName}_fk`,
           sourceSchema: sourceTable?.schema,
@@ -192,14 +192,14 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
       [addRelationship, getTable]
     );
 
-  const getRelationship: MapperContext['getRelationship'] = useCallback(
+  const getRelationship: DataMapperContext['getRelationship'] = useCallback(
     (id: string) =>
       relationships.find((relationship) => relationship.id === id) ??
       null,
     [relationships]
   );
 
-  const selectRelationShip: MapperContext['selectRelationShip'] = useCallback(
+  const selectRelationShip: DataMapperContext['selectRelationShip'] = useCallback(
     async (id: string) => {
       const selected = relationships.find((relationship) => relationship.id === id) ?? null
       setSelectedRelationships(selected)
@@ -207,7 +207,7 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
     [relationships]
   );
 
-  const removeRelationships: MapperContext['removeRelationships'] =
+  const removeRelationships: DataMapperContext['removeRelationships'] =
     useCallback(
       async (ids: string[]) => {
 
@@ -223,7 +223,7 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
       ]
     );
 
-  const removeRelationship: MapperContext['removeRelationship'] =
+  const removeRelationship: DataMapperContext['removeRelationship'] =
     useCallback(
       async (id: string) => {
         return removeRelationships([id]);
@@ -231,11 +231,11 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
       [removeRelationships]
     );
 
-  const updateRelationship: MapperContext['updateRelationship'] =
+  const updateRelationship: DataMapperContext['updateRelationship'] =
     useCallback(
       async (
         id: string,
-        relationship: Partial<DBRelationship>,
+        relationship: Partial<Relationship>,
       ) => {
         setRelationships((relationships) =>
           relationships.map((r) =>
@@ -249,7 +249,7 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
       ]
     );
 
-  const openRelationshipInPanel: MapperContext['openRelationshipInPanel'] =
+  const openRelationshipInPanel: DataMapperContext['openRelationshipInPanel'] =
     useCallback(
       async (
         id: string,
@@ -260,7 +260,7 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
     );
 
   return (
-    <mapperContext.Provider
+    <dataMapperContext.Provider
       value={{
         tables,
         setTables,
@@ -286,6 +286,6 @@ export const MapperProvider: React.FC<React.PropsWithChildren> = ({children}) =>
       }}
     >
       {children}
-    </mapperContext.Provider>
+    </dataMapperContext.Provider>
   );
 };

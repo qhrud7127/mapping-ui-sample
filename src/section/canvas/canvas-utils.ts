@@ -1,4 +1,4 @@
-import {Cardinality} from "../../lib/domain/db-relationship.ts";
+import {Cardinality} from "../../lib/domain/relationship.ts";
 
 export const getCardinalityMarkerId = ({
                                          cardinality,

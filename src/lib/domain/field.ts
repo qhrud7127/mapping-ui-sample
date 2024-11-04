@@ -3,7 +3,7 @@ import {DataType} from "./data-type.ts";
 import {ColumnInfo} from "../../data/metadata-types/column-info.ts";
 import {TableInfo} from "../../data/metadata-types/table-info.ts";
 
-export interface DBField {
+export interface Field {
   id: string;
   name: string;
   type: DataType;
@@ -35,7 +35,7 @@ export const createFieldsFromMetadata = ({
 
 
   return sortedColumns.map(
-    (col: ColumnInfo): DBField => ({
+    (col: ColumnInfo): Field => ({
       id: generateId(),
       name: col.name,
       type: {

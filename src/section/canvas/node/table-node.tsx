@@ -5,14 +5,14 @@ import {NodeResizer, useStore} from '@xyflow/react';
 import type {EdgeType} from '../canvas.tsx';
 import {Table2} from "lucide-react";
 import {cn} from "../../../lib/utils.ts";
-import {DBTable} from "../../../lib/domain/db-table.ts";
+import {Table} from "../../../lib/domain/table.ts";
 import {RelationshipEdgeType} from "../edge/relationship-edge.tsx";
-import {DBField} from "../../../lib/domain/db-field.ts";
+import {Field} from "../../../lib/domain/field.ts";
 import {TableNodeField} from "./table-node-field.tsx";
 
 export type TableNodeType = Node<
   {
-    table: DBTable;
+    table: Table;
   },
   'table'
 >;
@@ -70,7 +70,7 @@ export const TableNode: React.FC<NodeProps<TableNodeType>> = React.memo(
         <div
           className="transition-[max-height] duration-200 ease-in-out"
         >
-          {table.fields.map((field: DBField) => (
+          {table.fields.map((field: Field) => (
             <TableNodeField
               key={field.id}
               focused={focused}

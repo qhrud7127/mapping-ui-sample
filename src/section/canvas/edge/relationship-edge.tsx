@@ -1,14 +1,14 @@
 import React, {useCallback, useMemo} from 'react';
 import {Edge, EdgeProps, getSmoothStepPath, Position, useReactFlow} from '@xyflow/react';
 import {cn} from "../../../lib/utils.ts";
-import {useMapper} from "../../../hooks/use-mapper.ts";
+import {useDataMapper} from "../../../hooks/use-data-mapper.ts";
 import {RIGHT_HANDLE_ID_PREFIX} from "../node/table-node-field.tsx";
 import {getCardinalityMarkerId} from "../canvas-utils.ts";
-import {DBRelationship} from "../../../lib/domain/db-relationship.ts";
+import {Relationship} from "../../../lib/domain/relationship.ts";
 
 export type RelationshipEdgeType = Edge<
   {
-    relationship: DBRelationship;
+    relationship: Relationship;
     highlighted?: boolean;
   },
   'relationship-edge'
@@ -27,7 +27,7 @@ export const RelationshipEdge: React.FC<EdgeProps<RelationshipEdgeType>> = ({
                                                                             }) => {
   const {getInternalNode, getEdge} = useReactFlow();
 
-  const {relationships, selectRelationShip, openRelationshipInPanel} = useMapper();
+  const {relationships, selectRelationShip, openRelationshipInPanel} = useDataMapper();
 
   const relationship = data?.relationship;
 

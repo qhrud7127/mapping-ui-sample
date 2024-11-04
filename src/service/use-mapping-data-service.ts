@@ -29,6 +29,11 @@ export const LOAD_MAPPING_DATA = gql`
                 targetCardinality
                 targetFieldId
                 targetTableId
+                transformations {
+                    id
+                    type
+                    value
+                }
             }
         }
     }
