@@ -23,13 +23,12 @@ export const RelationshipList = () => {
     <div style={{width: '20vw', borderRight: '2px solid gray', padding: '20px'}}
          className={'bg-slate-200 dark:bg-slate-950'}>
       <ControlButtons/>
-      {
-        relationships.map((relationship) => (
-          <RelationshipItem key={relationship.id}
-                            relationship={relationship}
-                            onChange={handleChange(relationship.id)}
-                            expanded={expanded === relationship.id}/>
-        ))
+      {relationships.map((relationship) => (
+        <RelationshipItem key={relationship.id}
+                          relationship={relationship}
+                          onChange={handleChange(relationship.id)}
+                          expanded={expanded === relationship.id}/>
+      ))
       }</div>
   )
 }

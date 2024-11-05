@@ -205,8 +205,12 @@ export const RelationshipItem = ({relationship, expanded, onChange}: Relationshi
             </div>
           </div>
           {transforms.map(transform => (
-            <TransformationInfo transform={transform} editTransformMode={editTransformMode}
-                                setTransforms={setTransforms}/>
+            <TransformationInfo
+              key={transform.id}
+              transform={transform}
+              editTransformMode={editTransformMode}
+              setTransforms={setTransforms}
+            />
           ))}
         </div>
       </AccordionDetails>
