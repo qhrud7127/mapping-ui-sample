@@ -1,7 +1,7 @@
 export interface Transformation {
   id: string
   type: string
-  value: string
+  options: any
 }
 
 export const TransformationTypes = [
@@ -12,5 +12,4 @@ export const TransformationTypes = [
   'UpperCase',
   'LowerCase',
   'SubString',
-  'ReplaceAll',
 ]

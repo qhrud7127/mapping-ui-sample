@@ -8,15 +8,18 @@ export interface RelationshipInfoProps {
 }
 
 export const RelationshipInfo = ({table, field}: RelationshipInfoProps) => {
-  return (<div className={"border-2 py-2 px-5 rounded-lg min-w-16"}>
-    <div className="flex gap-2 items-center">
-      <Table2 className="size-3.5 shrink-0"/>
-      <p className="truncate font-bold text-base">
-        {table?.name}
+  return (
+
+    <div className={"pb-2 px-5 w-1/2"} style={{borderLeft: `4px solid ${table?.color}`}}>
+      <div className="flex gap-2 items-center">
+        <Table2 className="size-3.5 shrink-0"/>
+        <p className="truncate text-base">
+          {table?.name}
+        </p>
+      </div>
+      <p className="truncate text-sm">
+        {field?.name} ({field?.type.name})
       </p>
     </div>
-    <p className="truncate text-sm">
-      {field?.name} ({field?.type.name})
-    </p>
-  </div>)
+  )
 }

@@ -32,7 +32,7 @@ export const LOAD_MAPPING_DATA = gql`
                 transformations {
                     id
                     type
-                    value
+                    options
                 }
             }
         }

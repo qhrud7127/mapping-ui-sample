@@ -48,5 +48,5 @@ type FieldType {
 type Transformation {
     id: String
     type: String
-    value: String
+    options: JSON
 }

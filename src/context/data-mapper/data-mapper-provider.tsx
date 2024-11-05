@@ -183,6 +183,7 @@ export const DataMapperProvider: React.FC<React.PropsWithChildren> = ({children}
           sourceCardinality: 'one',
           targetCardinality: 'one',
           createdAt: Date.now(),
+          transformations: [],
         };
 
         await addRelationship(relationship);

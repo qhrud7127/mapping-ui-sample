@@ -1,7 +1,7 @@
 import {useDataMapper} from "../../hooks/use-data-mapper.ts";
-import React, {SyntheticEvent, useCallback, useRef, useState} from "react";
+import React, {SyntheticEvent, useCallback, useEffect, useRef, useState} from "react";
 import {Accordion, AccordionDetails, AccordionSummary} from "@mui/material";
-import {Check, ChevronDown, CircleDotDashed, Pencil, Plus, Repeat, Trash2} from "lucide-react";
+import {Check, ChevronDown, CircleDotDashed, Pencil, Plus, Trash2} from "lucide-react";
 import {useReactFlow} from "@xyflow/react";
 import {IconTooltipButton} from "../../components/button/icon-tooltip-button.tsx";
 import {Input} from "../../components/input/input.tsx";
@@ -29,6 +29,10 @@ export const RelationshipItem = ({relationship, expanded, onChange}: Relationshi
   } = useDataMapper();
   const inputRef = useRef<HTMLInputElement>(null);
   const {showAlert} = useDialog();
+
+  useEffect(() => {
+    console.log(transforms)
+  }, [transforms]);
 
   const targetTable = getTable(relationship.targetTableId);
   const targetField = getField(
@@ -124,13 +128,13 @@ export const RelationshipItem = ({relationship, expanded, onChange}: Relationshi
   }, [deleteRelationshipHandler, showAlert]);
 
   const addTransform = () => {
-    setTransforms(e => [...e, {id: generateId(), type: 'Prefix', value: ''}])
+    setTransforms(e => [...e, {id: generateId(), type: 'Mask', options: {}}])
   }
 
   return (
     <Accordion expanded={expanded}
                onChange={onChange}
-               className={'text-gray-600 dark:text-primary bg-slate-200 px-2 dark:bg-slate-900 border-b-2'}
+               className={'text-gray-600 dark:text-primary bg-slate-100/50 px-2 dark:bg-slate-950 border-b'}
     >
       <AccordionSummary
         expandIcon={<ChevronDown className={'text-gray-600 dark:text-primary'}/>}
@@ -151,7 +155,7 @@ export const RelationshipItem = ({relationship, expanded, onChange}: Relationshi
                 className="h-7 w-full focus-visible:ring-0"
               />
             ) : (
-              <div className="truncate text-sm">{relationship.name}</div>
+              <div className="truncate font-bold">{relationship.name}</div>
             )}
           </div>
           <div className="flex flex-row-reverse">
@@ -178,17 +182,17 @@ export const RelationshipItem = ({relationship, expanded, onChange}: Relationshi
         </div>
       </AccordionSummary>
       <AccordionDetails>
-        <div className="flex gap-2 overflow-hidden justify-around truncate text-left text-sm">
+        <div className="truncate font-bold text-base my-2">
+          Relationship Information
+        </div>
+        <div className="flex gap-2 overflow-hidden justify-around truncate text-left text-sm mx-4">
           <RelationshipInfo table={sourceTable} field={sourceField}/>
           <RelationshipInfo table={targetTable} field={targetField}/>
         </div>
         <div>
           <div className="flex gap-2 items-center justify-between my-4">
-            <div className={'flex items-center gap-4'}>
-              <Repeat className="size-3.5 shrink-0"/>
-              <p className="truncate font-bold text-base">
-                Transformations
-              </p>
+            <div className="truncate font-bold text-base my-2">
+              Transformations
             </div>
             <div className="flex justify-between">
               {editTransformMode ?
@@ -204,14 +208,16 @@ export const RelationshipItem = ({relationship, expanded, onChange}: Relationshi
                 </IconTooltipButton>)}
             </div>
           </div>
-          {transforms.map(transform => (
-            <TransformationInfo
-              key={transform.id}
-              transform={transform}
-              editTransformMode={editTransformMode}
-              setTransforms={setTransforms}
-            />
-          ))}
+          <div className="mx-4">
+            {transforms.map(transform => (
+              <TransformationInfo
+                key={transform.id}
+                transform={transform}
+                editTransformMode={editTransformMode}
+                setTransforms={setTransforms}
+              />
+            ))}
+          </div>
         </div>
       </AccordionDetails>
     </Accordion>

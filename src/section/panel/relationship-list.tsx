@@ -20,8 +20,8 @@ export const RelationshipList = () => {
   };
 
   return (
-    <div style={{width: '20vw', borderRight: '2px solid gray', padding: '20px'}}
-         className={'bg-slate-200 dark:bg-slate-950'}>
+    <div style={{width: '30vw', borderRight: '2px solid gray'}}
+         className={'bg-slate-100/50 dark:bg-slate-950'}>
       <ControlButtons/>
       {relationships.map((relationship) => (
         <RelationshipItem key={relationship.id}
