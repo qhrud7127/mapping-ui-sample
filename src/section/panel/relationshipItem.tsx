@@ -158,10 +158,10 @@ export const RelationshipItem = ({relationship, expanded, onChange}: Relationshi
             {!editNameMode ? (
               <>
                 <div className="flex flex-row-reverse md:hidden md:group-hover:flex">
-                  <IconTooltipButton title={'수정'} clickEvent={(e) => enterEditMode(e)}>
+                  <IconTooltipButton title={'수정'} clickEvent={enterEditMode}>
                     <Pencil className="size-4"/>
                   </IconTooltipButton>
-                  <IconTooltipButton title={'focus'} clickEvent={(e) => focusOnRelationship(e)}>
+                  <IconTooltipButton title={'focus'} clickEvent={focusOnRelationship}>
                     <CircleDotDashed className="size-4"/>
                   </IconTooltipButton>
                   <IconTooltipButton title={'삭제'} clickEvent={showDeleteConfirmation}>
@@ -170,7 +170,7 @@ export const RelationshipItem = ({relationship, expanded, onChange}: Relationshi
                 </div>
               </>
             ) : (
-              <IconTooltipButton title={'완료'} clickEvent={(e) => editRelationshipName(e)}>
+              <IconTooltipButton title={'완료'} clickEvent={editRelationshipName}>
                 <Check className="size-4"/>
               </IconTooltipButton>
             )}
