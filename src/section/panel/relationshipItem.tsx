@@ -1,24 +1,24 @@
 import {useDataMapper} from "../../hooks/use-data-mapper.ts";
-import {useCallback, useRef, useState} from "react";
+import React, {SyntheticEvent, useCallback, useRef, useState} from "react";
 import {Accordion, AccordionDetails, AccordionSummary} from "@mui/material";
-import {Check, ChevronDown, CircleDotDashed, Pencil, Plus, Repeat, Table2, Trash2} from "lucide-react";
+import {Check, ChevronDown, CircleDotDashed, Pencil, Plus, Repeat, Trash2} from "lucide-react";
 import {useReactFlow} from "@xyflow/react";
 import {IconTooltipButton} from "../../components/button/icon-tooltip-button.tsx";
 import {Input} from "../../components/input/input.tsx";
 import {useDialog} from "../../hooks/use-dialog.ts";
-import {Transformation, TransformationTypes} from "../../lib/domain/transformation.ts";
+import {Transformation} from "../../lib/domain/transformation.ts";
 import {generateId} from "../../lib/utils.ts";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "../../components/select/select.tsx";
+import {RelationshipInfo} from "./relationship-info.tsx";
+import {TransformationInfo} from "./transformation-info.tsx";
+import {Relationship} from "../../lib/domain/relationship.ts";
 
+export interface RelationshipProps {
+  relationship: Relationship;
+  expanded: boolean;
+  onChange: (_e: SyntheticEvent, isExpanded: boolean) => void;
+}
 
-export const Relationship = ({relationship, expanded, onChange}: any) => {
+export const RelationshipItem = ({relationship, expanded, onChange}: RelationshipProps) => {
   const [editNameMode, setEditNameMode] = useState<boolean>(false);
   const [editTransformMode, setEditTransformMode] = useState<boolean>(false);
   const {deleteElements, setEdges, fitView} = useReactFlow();
@@ -43,7 +43,8 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
   );
 
 
-  const enterEditMode = () => {
+  const enterEditMode = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setEditNameMode(true);
   };
 
@@ -53,7 +54,8 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
 
 
   const focusOnRelationship = useCallback(
-    () => {
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
       setEdges((edges) =>
         edges.map((edge) =>
           edge.id == relationship.id
@@ -86,7 +88,8 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
   }, [editTransformMode, relationship.id, transforms, updateRelationship]);
 
 
-  const editRelationshipName = useCallback(() => {
+  const editRelationshipName = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     if (!editNameMode) return;
     if (relationshipName.trim() && relationshipName !== relationship.name) {
       updateRelationship(relationship.id, {
@@ -120,78 +123,8 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
     });
   }, [deleteRelationshipHandler, showAlert]);
 
-  const RelationshipInfo = ({table, field}: any) => {
-    return (<div className={"border-2 py-2 px-5 rounded-lg min-w-16"}>
-      <div className="flex gap-2 items-center">
-        <Table2 className="size-3.5 shrink-0"/>
-        <p className="truncate font-bold text-base">
-          {table?.name}
-        </p>
-      </div>
-      <p className="truncate text-sm">
-        {field?.name} ({field?.type.name})
-      </p>
-    </div>)
-  }
-
   const addTransform = () => {
     setTransforms(e => [...e, {id: generateId(), type: 'Prefix', value: ''}])
-  }
-
-  const updateTransformation = (value, id) => {
-    setTransforms(transform => transform.map(t => {
-      if (t.id == id) {
-        t.type = value
-        return t;
-      } else return t;
-    }))
-  }
-
-  const TransformationInfo = ({transform}: { transform: Transformation }) => {
-    return (<>
-      {editTransformMode ?
-        (<Select
-          value={transform.type}
-          onValueChange={(e) => updateTransformation(e, transform.id)}
-        >
-          <SelectTrigger className="h-8">
-            <SelectValue/>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {TransformationTypes.map(type => (
-                <SelectItem value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>)
-        : (<div className="py-2 px-5 rounded-lg min-w-16">
-          <p className="truncate font-bold text-base">
-            <p>{transform?.type}</p>
-          </p>
-          <p className="truncate text-sm">
-            {transform?.value}
-          </p>
-        </div>)
-      }
-    </>)
-  }
-
-  const EditTransformations = () => {
-    return (
-      <>
-        <div className="flex justify-between">
-          <IconTooltipButton title={'수정'} clickEvent={addTransform}>
-            <Plus className="size-4"/>
-          </IconTooltipButton>
-        </div>
-        {transforms.map(transform => (
-          <TransformationInfo transform={transform}/>
-        ))}
-      </>
-    )
   }
 
   return (
@@ -225,10 +158,10 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
             {!editNameMode ? (
               <>
                 <div className="flex flex-row-reverse md:hidden md:group-hover:flex">
-                  <IconTooltipButton title={'수정'} clickEvent={enterEditMode}>
+                  <IconTooltipButton title={'수정'} clickEvent={(e) => enterEditMode(e)}>
                     <Pencil className="size-4"/>
                   </IconTooltipButton>
-                  <IconTooltipButton title={'focus'} clickEvent={focusOnRelationship}>
+                  <IconTooltipButton title={'focus'} clickEvent={(e) => focusOnRelationship(e)}>
                     <CircleDotDashed className="size-4"/>
                   </IconTooltipButton>
                   <IconTooltipButton title={'삭제'} clickEvent={showDeleteConfirmation}>
@@ -237,7 +170,7 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
                 </div>
               </>
             ) : (
-              <IconTooltipButton title={'완료'} clickEvent={editRelationshipName}>
+              <IconTooltipButton title={'완료'} clickEvent={(e) => editRelationshipName(e)}>
                 <Check className="size-4"/>
               </IconTooltipButton>
             )}
@@ -250,7 +183,7 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
           <RelationshipInfo table={targetTable} field={targetField}/>
         </div>
         <div>
-          <div className="flex gap-2 items-center justify-between mt-4">
+          <div className="flex gap-2 items-center justify-between my-4">
             <div className={'flex items-center gap-4'}>
               <Repeat className="size-3.5 shrink-0"/>
               <p className="truncate font-bold text-base">
@@ -259,20 +192,22 @@ export const Relationship = ({relationship, expanded, onChange}: any) => {
             </div>
             <div className="flex justify-between">
               {editTransformMode ?
-                (<IconTooltipButton title={'완료'} clickEvent={editTransform}>
-                  <Check className="size-4"/>
-                </IconTooltipButton>) :
+                (<>
+                  <IconTooltipButton title={'추가'} clickEvent={addTransform}>
+                    <Plus className="size-4"/>
+                  </IconTooltipButton>
+                  <IconTooltipButton title={'완료'} clickEvent={editTransform}>
+                    <Check className="size-4"/>
+                  </IconTooltipButton></>) :
                 (<IconTooltipButton title={'수정'} clickEvent={enterTransformEditMode}>
                   <Pencil className="size-4"/>
                 </IconTooltipButton>)}
             </div>
           </div>
-          {editTransformMode ?
-            (<EditTransformations></EditTransformations>) :
-            (transforms.map(transform => (
-              <TransformationInfo transform={transform}/>
-            )))
-          }
+          {transforms.map(transform => (
+            <TransformationInfo transform={transform} editTransformMode={editTransformMode}
+                                setTransforms={setTransforms}/>
+          ))}
         </div>
       </AccordionDetails>
     </Accordion>

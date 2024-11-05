@@ -1,9 +1,10 @@
 import {IconButton, Tooltip} from "@mui/material";
+import {MouseEventHandler, ReactNode} from "react";
 
 type Props = {
   title?: string;
-  clickEvent: () => void;
-  children: React.ReactNode;
+  clickEvent: MouseEventHandler<HTMLButtonElement>;
+  children: ReactNode;
 };
 
 export const IconTooltipButton = ({title, clickEvent, children}: Props) =>

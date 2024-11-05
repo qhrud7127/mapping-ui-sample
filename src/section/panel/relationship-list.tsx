@@ -1,6 +1,6 @@
 import {useDataMapper} from "../../hooks/use-data-mapper.ts";
-import {Relationship} from "./relationship.tsx";
-import {useEffect, useState} from "react";
+import {RelationshipItem} from "./relationshipItem.tsx";
+import {SyntheticEvent, useEffect, useState} from "react";
 import {ControlButtons} from "./control-buttons.tsx";
 
 export const RelationshipList = () => {
@@ -15,7 +15,7 @@ export const RelationshipList = () => {
     setExpanded(expandedId)
   }, [expandedId]);
 
-  const handleChange = (id: string | null) => (_e: any, isExpanded: boolean) => {
+  const handleChange = (id: string | null) => (_e: SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? id : null);
   };
 
@@ -25,10 +25,10 @@ export const RelationshipList = () => {
       <ControlButtons/>
       {
         relationships.map((relationship) => (
-          <Relationship key={relationship.id}
-                        relationship={relationship}
-                        onChange={handleChange(relationship.id)}
-                        expanded={expanded === relationship.id}/>
+          <RelationshipItem key={relationship.id}
+                            relationship={relationship}
+                            onChange={handleChange(relationship.id)}
+                            expanded={expanded === relationship.id}/>
         ))
       }</div>
   )
